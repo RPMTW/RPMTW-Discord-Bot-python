@@ -1,0 +1,15 @@
+[tool.pdm]
+
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "RPMTW", email = ""},
+]
+dependencies = [
+    "py-cord>=2.4.0",
+    "python-dotenv>=0.21.1",
+]
+requires-python = ">=3.11"
+license = {text = "GPL-3.0"}

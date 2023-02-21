@@ -17,10 +17,10 @@ pdm sync
 - General
   - `hello` - Hello~
   - `info` - show bot's information
-<!-- - Chef
+- Chef
   - `chef user` - chef someone
   - `chef rank` - show chef rank
-- Music
+<!-- - Music
   - `music join` - make bot join to the voice channel where you are
   - `music leave` - make bot leave from the voice channel
   - `music np` / `music now-play` - show the music that now playing
@@ -34,3 +34,5 @@ pdm sync
   - `mod view` - view mod on RPMWiki -->
 - FAQ
   - `faq <question>` - show the faq
+- Dynamic Voice Channel
+- 

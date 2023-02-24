@@ -1,16 +1,12 @@
 import logging
 
 import discord
-from default_data import commands_checks, option
 from discord import ApplicationContext, Bot, commands
 from discord.ext.commands import check
 
 
-class BotOption:
+class ApplicationOption:
     default = {"guild_ids": [815819580840607807]}
-
-
-option = BotOption()
 
 
 class Config:
@@ -25,7 +21,7 @@ class Config:
         return getattr(self, key)
 
 
-class commands_checks:
+class CommandChecks:
     @staticmethod
     def is_developer():
         def predicate(ctx):

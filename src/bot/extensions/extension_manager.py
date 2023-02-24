@@ -14,7 +14,7 @@ class ExtensionManagerCog(Cog):
         logging.debug(f"load extension - {self.__cog_name__}")
 
     ExtensionManagerSlashCommandGroup = commands.SlashCommandGroup(
-        "ext-manager", **option.default
+        "ext-manager", **ApplicationOption.default
     )
 
     async def ext_action(self, ctx: ApplicationContext, ext_name: str, action: str):
@@ -25,22 +25,22 @@ class ExtensionManagerCog(Cog):
         else:
             await ctx.respond(f"{action.title()} extension - {ext_name} success")
 
-    @ExtensionManagerSlashCommandGroup.command(**option.default)
-    @commands_checks.is_developer()
+    @ExtensionManagerSlashCommandGroup.command(**ApplicationOption.default)
+    @CommandChecks.is_developer()
     async def load(
         self, ctx: ApplicationContext, ext_name: Option(str, choices=extension_list)  # type: ignore
     ):
         await self.ext_action(ctx, ext_name, "load")
 
-    @ExtensionManagerSlashCommandGroup.command(**option.default)
-    @commands_checks.is_developer()
+    @ExtensionManagerSlashCommandGroup.command(**ApplicationOption.default)
+    @CommandChecks.is_developer()
     async def unload(
         self, ctx: ApplicationContext, ext_name: Option(str, choices=extension_list)  # type: ignore
     ):
         await self.ext_action(ctx, ext_name, "unload")
 
-    @ExtensionManagerSlashCommandGroup.command(**option.default)
-    @commands_checks.is_developer()
+    @ExtensionManagerSlashCommandGroup.command(**ApplicationOption.default)
+    @CommandChecks.is_developer()
     async def reload(
         self, ctx: ApplicationContext, ext_name: Option(str, choices=extension_list)  # type: ignore
     ):

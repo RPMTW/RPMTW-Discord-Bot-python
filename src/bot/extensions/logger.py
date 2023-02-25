@@ -1,8 +1,11 @@
 from datetime import datetime, timedelta, timezone
+from typing import TYPE_CHECKING
 
 from discord import Color, Embed, Message, TextChannel
 from packages.cog_data import *
 
+if TYPE_CHECKING:
+    from core.bot import RPMBot
 
 
 class LoggerCog(InitedCog):
@@ -33,13 +36,13 @@ class LoggerCog(InitedCog):
 
         return embed
 
-    @Cog.listener()
+    @InitedCog.listener()
     async def on_message_delete(self, msg: Message):
         channel: TextChannel = self.event_config["msg"]["channel"]  # type: ignore
         await channel.send(embed=self.embed_gen("delete", msg))
         logging.info(f"{msg.author} delete message:\n" f"\t{msg.content}")
 
-    @Cog.listener()
+    @InitedCog.listener()
     async def on_message_edit(self, before_msg: Message, after_msg: Message):
         channel: TextChannel = self.event_config["msg"]["channel"]  # type: ignore
         await channel.send(embed=self.embed_gen("edit", before_msg, after_msg))
@@ -51,10 +54,10 @@ class LoggerCog(InitedCog):
             f"\t{after_msg.content}"
         )
 
-    @Cog.listener()
+    @InitedCog.listener()
     async def on_application_command(self, ctx: ApplicationContext):
         logging.info(f"{ctx.author} used {ctx.command.name}")
 
 
-def setup(bot: Bot):
+def setup(bot: "RPMBot"):
     bot.add_cog(LoggerCog(bot))

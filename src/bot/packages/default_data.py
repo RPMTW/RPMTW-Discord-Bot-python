@@ -33,4 +33,14 @@ class CommandChecks:
 
         return check(predicate)
 
-__all__ = ['logging', 'discord', 'ApplicationContext', 'Bot', 'commands', 'ApplicationOption', 'Config', 'CommandChecks']
+
+__all__ = [
+    "logging",
+    "discord",
+    "ApplicationContext",
+    "Bot",
+    "commands",
+    "ApplicationOption",
+    "Config",
+    "CommandChecks",
+]

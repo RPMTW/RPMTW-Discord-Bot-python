@@ -1,10 +1,12 @@
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from discord.commands import Option
 from packages.cog_data import *
 
-extension_list = [i.stem for i in Path("./src/bot/extensions").glob("*.py")]
+if TYPE_CHECKING:
+    from core.bot import RPMBot
 
+from core.extension import extension_list
 
 
 class ExtensionManagerCog(InitedCog):
@@ -15,10 +17,9 @@ class ExtensionManagerCog(InitedCog):
     async def ext_action(self, ctx: ApplicationContext, ext_name: str, action: str):
         try:
             getattr(self.bot, f"{action}_extension")(f"extensions.{ext_name}")
+            await ctx.respond(f"{action.title()} extension - {ext_name} success")
         except:
             raise
-        else:
-            await ctx.respond(f"{action.title()} extension - {ext_name} success")
 
     @ExtensionManagerSlashCommandGroup.command(**ApplicationOption.default)
     @CommandChecks.is_developer()
@@ -42,5 +43,5 @@ class ExtensionManagerCog(InitedCog):
         await self.ext_action(ctx, ext_name, "reload")
 
 
-def setup(bot: Bot):
+def setup(bot: "RPMBot"):
     bot.add_cog(ExtensionManagerCog(bot))

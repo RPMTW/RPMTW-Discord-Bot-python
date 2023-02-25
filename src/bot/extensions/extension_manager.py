@@ -6,13 +6,8 @@ from packages.cog_data import *
 extension_list = [i.stem for i in Path("./src/bot/extensions").glob("*.py")]
 
 
-class ExtensionManagerCog(Cog):
-    def __init__(self, bot: Bot) -> None:
-        super().__init__()
-        self.bot: Bot = bot
 
-        logging.debug(f"load extension - {self.__cog_name__}")
-
+class ExtensionManagerCog(InitedCog):
     ExtensionManagerSlashCommandGroup = commands.SlashCommandGroup(
         "ext-manager", **ApplicationOption.default
     )

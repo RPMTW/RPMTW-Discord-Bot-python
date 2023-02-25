@@ -4,10 +4,10 @@ from discord import Color, Embed, Message, TextChannel
 from packages.cog_data import *
 
 
-class LoggerCog(discord.Cog):
-    def __init__(self, bot: Bot) -> None:
-        super().__init__()
-        self.bot: Bot = bot
+
+class LoggerCog(InitedCog):
+    def __init__(self, bot: "RPMBot") -> None:
+        super().__init__(bot)
         self.event_config = {"msg": {"channel": self.bot.get_channel(832849374395760660)}}
         self.embed_config = {
             "delete": {"name": "刪除", "color": Color.red()},

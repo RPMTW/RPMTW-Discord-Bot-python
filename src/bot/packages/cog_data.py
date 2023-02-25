@@ -1,2 +1,2 @@
-from default_data import *
-from discord.ext.commands import Cog
+from core.extension import InitedCog
+from packages.default_data import *

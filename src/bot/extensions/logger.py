@@ -11,11 +11,15 @@ if TYPE_CHECKING:
 class LoggerCog(InitedCog):
     def __init__(self, bot: "RPMBot") -> None:
         super().__init__(bot)
-        self.event_config = {"msg": {"channel": self.bot.get_channel(832849374395760660)}}
+        self.event_config = None
         self.embed_config = {
             "delete": {"name": "刪除", "color": Color.red()},
             "edit": {"name": "修改", "color": Color.green()},
         }
+
+    async def set_event_config(self):
+        await self.bot.wait_until_ready()
+        self.event_config = {"msg": {"channel": self.bot.get_channel(832849374395760660)}}
 
     def embed_gen(self, type_: str, *msgs: Message):
         translated_type, color = self.embed_config[type_].values()
@@ -38,12 +42,18 @@ class LoggerCog(InitedCog):
 
     @InitedCog.listener()
     async def on_message_delete(self, msg: Message):
+        if not self.event_config:
+            await self.set_event_config()
+
         channel: TextChannel = self.event_config["msg"]["channel"]  # type: ignore
         await channel.send(embed=self.embed_gen("delete", msg))
         logging.info(f"{msg.author} delete message:\n" f"\t{msg.content}")
 
     @InitedCog.listener()
     async def on_message_edit(self, before_msg: Message, after_msg: Message):
+        if not self.event_config:
+            await self.set_event_config()
+
         channel: TextChannel = self.event_config["msg"]["channel"]  # type: ignore
         await channel.send(embed=self.embed_gen("edit", before_msg, after_msg))
         logging.info(

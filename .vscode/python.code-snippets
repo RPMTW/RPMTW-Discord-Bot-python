@@ -1,0 +1,20 @@
+{
+  "Cog Inited": {
+    "prefix": "init-cog",
+    "scope": "python",
+    "body": [
+      "from typing import TYPE_CHECKING",
+      "",
+      "from packages.cog_data import *",
+      "",
+      "if TYPE_CHECKING:",
+      "    from core.bot import RPMBot",
+      "",
+      "class ${0:CogName}Cog(InitedCog):",
+      "    ...",
+      "",
+      "def setup(bot: \"RPMBot\"):",
+      "    bot.add_cog(${0:CogName}Cog(bot))"
+    ]
+  }
+}

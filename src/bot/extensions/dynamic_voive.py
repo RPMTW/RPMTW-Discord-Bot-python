@@ -13,12 +13,18 @@ class DynamicVoiceCog(InitedCog):
 
         self.voice_list: dict[str, int] = {}
         self.config = self.bot.config["constant.dynamic.voice"]
-        self.main_channel = self.bot.get_channel(self.config["main_channel_id"])
+        self.main_channel = None
+
+    async def ensure_exist(self):
+        await self.bot.wait_until_ready()
+        if not self.main_channel:
+            self.main_channel = self.bot.get_channel(self.config["main_channel_id"])
 
     @InitedCog.listener()
     async def on_voice_state_update(
         self, member: Member, before: VoiceState, after: VoiceState
     ):
+        await self.ensure_exist()
         """
         #? join
         1. a join main_channel

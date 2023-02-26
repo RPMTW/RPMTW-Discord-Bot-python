@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from core.bot import RPMBot
 
 
-class Basic(InitedCog):
+class BasicCog(InitedCog):
     @commands.slash_command(**ApplicationOption.default)
     async def hello(self, ctx: ApplicationContext):
         await ctx.respond(f"Hello, {ctx.author.mention}")
@@ -17,4 +17,4 @@ class Basic(InitedCog):
 
 
 def setup(bot: "RPMBot"):
-    bot.add_cog(Basic(bot))
+    bot.add_cog(BasicCog(bot))

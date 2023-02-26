@@ -13,14 +13,20 @@ class ApplicationOption:
 
 class Config:
     def __init__(self, data: dict) -> None:
-        for key, value in data.items():
-            if isinstance(value, dict):
-                setattr(self, key, Config(value))
-            else:
-                setattr(self, key, value)
+        self.data = data
 
     def __getitem__(self, key: str):
-        return getattr(self, key)
+        """
+        `key`: dot split keys,
+            eg: `data = {"key": {"subkey": value}}`
+
+            use `value = Config(data)["key.subkey"]` to get value
+        """
+        data = self.data
+        for _ in key.split("."):
+            data = data[_]
+
+        return data
 
 
 class CommandChecks:

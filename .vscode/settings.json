@@ -10,6 +10,7 @@
     "Euxcbsks",
     "pycord"
   ],
+  "editor.tabSize": 2,
   "[python]": {
     "editor.tabSize": 4,
     "editor.defaultFormatter": "ms-python.black-formatter"

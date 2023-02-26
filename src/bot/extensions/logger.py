@@ -23,7 +23,7 @@ class LoggerCog(InitedCog):
 
     def embed_gen(self, type_: str, *msgs: Message):
         translated_type, color = self.embed_config[type_].values()
-        msg, after = msgs
+        msg = msgs[0]
         embed = Embed(
             title=f"訊息{translated_type}紀錄",
             description=f"{msg.author.mention}在{msg.channel.mention}{translated_type}了訊息",  # type: ignore
@@ -35,7 +35,7 @@ class LoggerCog(InitedCog):
                 embed.add_field(name=f"{translated_type}的訊息內文", value=msg.content)
             case "edit":
                 embed.add_field(name="原始的訊息內文", value=msg.content).add_field(
-                    name=f"{translated_type}的訊息內文", value=after.content
+                    name=f"{translated_type}的訊息內文", value=msgs[1].content
                 )
 
         return embed

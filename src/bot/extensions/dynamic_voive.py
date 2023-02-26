@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from discord import Member, VoiceState
+from discord import Member, VoiceChannel, VoiceState
 from packages.cog_data import *
 
 if TYPE_CHECKING:
@@ -13,12 +13,12 @@ class DynamicVoiceCog(InitedCog):
 
         self.voice_list: dict[str, int] = {}
         self.config = self.bot.config["constant.dynamic.voice"]
-        self.main_channel = None
+        self.main_channel: VoiceChannel = None  # type: ignore
 
     async def ensure_exist(self):
         await self.bot.wait_until_ready()
         if not self.main_channel:
-            self.main_channel = self.bot.get_channel(self.config["main_channel_id"])
+            self.main_channel = self.bot.get_channel(self.config["main_channel_id"])  # type: ignore
 
     @InitedCog.listener()
     async def on_voice_state_update(

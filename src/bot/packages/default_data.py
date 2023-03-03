@@ -18,9 +18,9 @@ class Config:
     def __getitem__(self, key: str):
         """
         `key`: dot split keys,
-            eg: `data = {"key": {"subkey": value}}`
+            eg: `data = {"key": {"sub_key": value}}`
 
-            use `value = Config(data)["key.subkey"]` to get value
+            use `value = Config(data)["key.sub_key"]` to get value
         """
         data = self.data
         for _ in key.split("."):
@@ -30,16 +30,17 @@ class Config:
 
 
 class CommandChecks:
-    @staticmethod
-    def is_developer():
-        def predicate(ctx):
-            return ctx.author.id in {
-                467532880625664000,  # YT Mango#4092
-                645588343228334080,  # 菘菘#8663
-                577086242806693898,  # Euxcbsks#5316
-            }
+    # @staticmethod
+    # def is_developer():
+    #     def predicate(ctx):
+    #         return ctx.author.id in {
+    #             467532880625664000,  # YT Mango#4092
+    #             645588343228334080,  # 菘菘#8663
+    #             577086242806693898,  # Euxcbsks#5316
+    #         }
 
-        return check(predicate)
+    #     return check(predicate)
+    pass
 
 
 __all__ = [

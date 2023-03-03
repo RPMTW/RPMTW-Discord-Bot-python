@@ -11,6 +11,9 @@ if TYPE_CHECKING:
 class LoggerCog(InitedCog):
     def __init__(self, bot: "RPMBot") -> None:
         super().__init__(bot)
+        self.config = self.bot.config[
+            f"constant.{'test' if self.bot.test else 'main'}.logger"
+        ]
         self.event_config = None
         self.embed_config = {
             "delete": {"name": "刪除", "color": Color.red()},
@@ -21,7 +24,7 @@ class LoggerCog(InitedCog):
         await self.bot.wait_until_ready()
         if not self.event_config:
             self.event_config = {
-                "msg": {"channel": self.bot.get_channel(832849374395760660)}
+                "msg": {"channel": self.bot.get_channel(self.config["msg"]["channel_id"])}
             }
 
     def embed_gen(self, type_: str, *msgs: Message):

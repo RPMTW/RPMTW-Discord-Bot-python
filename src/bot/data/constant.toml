@@ -14,6 +14,9 @@ owner_ids = [
 channel_id = 832895058281758740
 category_id = 815819581440262145
 
+[main.logger.msg]
+channel_id = 832849374395760660
+
 # ========================================================= #
 
 [test.bot.settings]
@@ -28,3 +31,5 @@ owner_ids = [
 channel_id = 1081036813591924817
 category_id = 1081036755542749225
 
+[test.logger.msg]
+channel_id = 1077436396404490290

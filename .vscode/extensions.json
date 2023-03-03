@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "donjayamanne.python-extension-pack",
+    "bungcip.better-toml",
+    "aaron-bond.better-comments",
+    "streetsidesoftware.code-spell-checker",
+    "yzhang.markdown-all-in-one",
+    "ms-python.isort",
+    "ms-python.black-formatter",
+    "ZainChen.json"
+  ]
+}

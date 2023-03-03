@@ -11,8 +11,17 @@
     "pycord"
   ],
   "editor.tabSize": 2,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
   "[python]": {
     "editor.tabSize": 4,
-    "editor.defaultFormatter": "ms-python.black-formatter"
-  }
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
+  },
+  "isort.args": [
+    "--profiles",
+    "black"
+  ]
 }

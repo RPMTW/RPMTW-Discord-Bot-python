@@ -16,5 +16,26 @@
       "def setup(bot: \"RPMBot\"):",
       "    bot.add_cog(${0:CogName}Cog(bot))"
     ]
+  },
+  "Cog Inited with super": {
+    "prefix": "init-cog-super",
+    "scope": "python",
+    "body": [
+      "from typing import TYPE_CHECKING",
+      "",
+      "from packages.cog_data import *",
+      "",
+      "if TYPE_CHECKING:",
+      "    from core.bot import RPMBot",
+      "",
+      "",
+      "class ${0:CogName}Cog(InitedCog):",
+      "    def __init__(self, bot: \"RPMBot\") -> None:",
+      "        super().__init__(bot)",
+      "",
+      "",
+      "def setup(bot: \"RPMBot\"):",
+      "    bot.add_cog(${0:CogName}Cog(bot))"
+    ]
   }
 }

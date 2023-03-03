@@ -56,7 +56,7 @@ class DynamicVoiceCog(InitedCog):
             }
             self.voice_mapping[
                 member.id
-            ] = exclusive_channel = await channel.category.create_voice_channel(
+            ] = exclusive_channel = await channel.category.create_voice_channel(  # type: ignore
                 f"{member.name}的頻道", overwrites=overwrites
             )
             await member.move_to(exclusive_channel)
@@ -67,7 +67,7 @@ class DynamicVoiceCog(InitedCog):
     @InitedCog.listener()
     async def on_ready(self):  # clear empty voice channel after restart
         logging.info("Try to clear empty dynamic voice channel")
-        category: CategoryChannel = self.bot.get_channel(self.config["category_id"])
+        category: CategoryChannel = self.bot.get_channel(self.config["category_id"])  # type: ignore
         if category:
             for sub_channel in category.voice_channels:
                 if (

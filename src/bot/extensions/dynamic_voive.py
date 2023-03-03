@@ -48,7 +48,7 @@ class DynamicVoiceCog(InitedCog):
             logging.info(f"{member} leave his/her exclusive channel(id={channel.id})")
 
         # join/move to main_channel
-        if (main_channel := after.channel) and channel.id == self.main_channel.id:
+        if (channel := after.channel) and channel.id == self.main_channel.id:
             overwrites = {
                 member: PermissionOverwrite(manage_roles=True, manage_channels=True),
                 member.guild.default_role: PermissionOverwrite(priority_speaker=True),
@@ -56,7 +56,7 @@ class DynamicVoiceCog(InitedCog):
             }
             self.voice_mapping[
                 member.id
-            ] = exclusive_channel = await main_channel.category.create_voice_channel(
+            ] = exclusive_channel = await channel.category.create_voice_channel(
                 f"{member.name}的頻道", overwrites=overwrites
             )
             await member.move_to(exclusive_channel)

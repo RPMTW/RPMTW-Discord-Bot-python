@@ -18,13 +18,15 @@ class DynamicVoiceCog(InitedCog):
         super().__init__(bot)
 
         self.voice_mapping: dict[int, VoiceChannel] = {}
-        self.config = self.bot.config["constant.dynamic.voice"]
+        self.config = self.bot.config[
+            f"constant.{'test' if self.bot.config['constant.is_test'] else 'main'}.dynamic.voice"
+        ]
         self.main_channel: VoiceChannel = None  # type: ignore
 
     async def ensure_exist(self):
         await self.bot.wait_until_ready()
         if not self.main_channel:
-            self.main_channel = self.bot.get_channel(self.config["main_channel_id"])  # type: ignore
+            self.main_channel = self.bot.get_channel(self.config["channel_id"])  # type: ignore
 
     @InitedCog.listener()
     async def on_voice_state_update(
@@ -65,13 +67,11 @@ class DynamicVoiceCog(InitedCog):
     @InitedCog.listener()
     async def on_ready(self):  # clear empty voice channel after restart
         logging.info("Try to clear empty dynamic voice channel")
-        category: CategoryChannel = self.bot.get_channel(
-            self.config["main_category_id"]
-        )
+        category: CategoryChannel = self.bot.get_channel(self.config["category_id"])
         if category:
             for sub_channel in category.voice_channels:
                 if (
-                    sub_channel.id != self.config["main_channel_id"]
+                    sub_channel.id != self.config["channel_id"]
                     and not sub_channel.members
                 ):
                     await sub_channel.delete()

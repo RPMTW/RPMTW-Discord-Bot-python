@@ -19,7 +19,7 @@ class DynamicVoiceCog(InitedCog):
 
         self.voice_mapping: dict[int, VoiceChannel] = {}
         self.config = self.bot.config[
-            f"constant.{'test' if self.bot.config['constant.is_test'] else 'main'}.dynamic.voice"
+            f"constant.{'test' if self.bot.test else 'main'}.dynamic.voice"
         ]
         self.main_channel: VoiceChannel = None  # type: ignore
 

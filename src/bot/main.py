@@ -10,4 +10,4 @@ if __name__ == "__main__":
 
     bot = RPMBot()
     bot.load_extensions(*(f"extensions.{file}" for file in extension_list))
-    bot.run(environ["TEST_TOKEN" if bot.config["constant.is_test"] else "TOKEN"])
+    bot.run(environ["TEST_TOKEN" if bot.test else "TOKEN"])

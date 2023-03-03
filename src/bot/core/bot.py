@@ -13,15 +13,14 @@ class RPMBot(Bot):
             with open(f"./src/bot/data/{filename}", "rb") as file:
                 data[filename.removesuffix(".toml")] = load(file)
         self.config = Config(data)
+        self.test: bool = self.config["constant.is_test"]  # type: ignore
 
         intents = Intents.default()
         intents.message_content = True
         intents.members = True
         super().__init__(
             intents=intents,
-            **self.config[
-                f"constant.{'test' if self.config['constant.is_test'] else 'main'}.bot.settings"
-            ],
+            **self.config[f"constant.{'test' if self.test else 'main'}.bot.settings"],
         )
 
     async def on_ready(self):

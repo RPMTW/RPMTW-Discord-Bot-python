@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 
 from discord import (
+    CategoryChannel,
     Member,
+    PermissionOverwrite,
     VoiceChannel,
     VoiceState,
-    PermissionOverwrite,
-    CategoryChannel,
 )
 from packages.cog_data import *
 

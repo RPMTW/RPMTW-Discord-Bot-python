@@ -2,13 +2,8 @@ import logging
 
 import discord
 from discord import ApplicationContext, Bot, commands
-from discord.ext.commands import check
 
 logging.basicConfig(level=logging.INFO)
-
-
-class ApplicationOption:
-    default = {"guild_ids": [815819580840607807]}
 
 
 class Config:
@@ -49,7 +44,6 @@ __all__ = [
     "ApplicationContext",
     "Bot",
     "commands",
-    "ApplicationOption",
     "Config",
     "CommandChecks",
 ]

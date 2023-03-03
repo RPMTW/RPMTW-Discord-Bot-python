@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 
 from discord.commands import Option
 from discord.ext.commands import is_owner
-
 from packages.cog_data import *
 
 if TYPE_CHECKING:
@@ -12,9 +11,7 @@ from core.extension import extension_list
 
 
 class ExtensionManagerCog(InitedCog):
-    ExtensionManagerSlashCommandGroup = commands.SlashCommandGroup(
-        "ext-manager", **ApplicationOption.default
-    )
+    ExtensionManagerSlashCommandGroup = commands.SlashCommandGroup("ext-manager")
 
     async def ext_action(self, ctx: ApplicationContext, ext_name: str, action: str):
         try:
@@ -23,21 +20,21 @@ class ExtensionManagerCog(InitedCog):
         except:
             raise
 
-    @ExtensionManagerSlashCommandGroup.command(**ApplicationOption.default)
+    @ExtensionManagerSlashCommandGroup.command()
     @is_owner()
     async def load(
         self, ctx: ApplicationContext, ext_name: Option(str, choices=extension_list)  # type: ignore
     ):
         await self.ext_action(ctx, ext_name, "load")
 
-    @ExtensionManagerSlashCommandGroup.command(**ApplicationOption.default)
+    @ExtensionManagerSlashCommandGroup.command()
     @is_owner()
     async def unload(
         self, ctx: ApplicationContext, ext_name: Option(str, choices=extension_list)  # type: ignore
     ):
         await self.ext_action(ctx, ext_name, "unload")
 
-    @ExtensionManagerSlashCommandGroup.command(**ApplicationOption.default)
+    @ExtensionManagerSlashCommandGroup.command()
     @is_owner()
     async def reload(
         self, ctx: ApplicationContext, ext_name: Option(str, choices=extension_list)  # type: ignore

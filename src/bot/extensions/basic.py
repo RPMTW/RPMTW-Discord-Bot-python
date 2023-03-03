@@ -7,11 +7,11 @@ if TYPE_CHECKING:
 
 
 class BasicCog(InitedCog):
-    @commands.slash_command(**ApplicationOption.default)
+    @commands.slash_command()
     async def hello(self, ctx: ApplicationContext):
         await ctx.respond(f"Hello, {ctx.author.mention}")
 
-    @commands.slash_command(**ApplicationOption.default)
+    @commands.slash_command()
     async def info(self, ctx: ApplicationContext):
         await ctx.respond("WIP")
 

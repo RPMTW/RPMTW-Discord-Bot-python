@@ -6,7 +6,7 @@ from discord.ext.commands import errors
 from packages.cog_data import *
 
 if TYPE_CHECKING:
-    from core.bot import RPMBot
+    from core.bot import RPMTWBot
 
 class EventCog(InitedCog):
     @InitedCog.listener()
@@ -16,5 +16,5 @@ class EventCog(InitedCog):
         else:
             raise exc
 
-def setup(bot: "RPMBot"):
+def setup(bot: "RPMTWBot"):
     bot.add_cog(EventCog(bot))

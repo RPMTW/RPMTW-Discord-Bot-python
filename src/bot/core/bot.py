@@ -1,5 +1,6 @@
 import logging
 from os import listdir
+from datetime import datetime
 
 from discord import Bot, Intents
 from packages.default_data import Config
@@ -14,6 +15,7 @@ class RPMTWBot(Bot):
                 data[filename.removesuffix(".toml")] = load(file)
         self.config = Config(data)
         self.test: bool = self.config["constant.is_test"]  # type: ignore
+        self.online_time = datetime.now()
 
         intents = Intents.default()
         intents.message_content = True

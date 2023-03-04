@@ -25,3 +25,6 @@ venv.bak/
 
 # for test
 test/
+
+# workspace seeting
+.vscode/

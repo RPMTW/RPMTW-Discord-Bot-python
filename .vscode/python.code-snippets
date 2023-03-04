@@ -8,12 +8,12 @@
       "from packages.cog_data import *",
       "",
       "if TYPE_CHECKING:",
-      "    from core.bot import RPMBot",
+      "    from core.bot import RPMTWBot",
       "",
       "class ${0:CogName}Cog(InitedCog):",
       "    ...",
       "",
-      "def setup(bot: \"RPMBot\"):",
+      "def setup(bot: \"RPMTWBot\"):",
       "    bot.add_cog(${0:CogName}Cog(bot))"
     ]
   },
@@ -26,15 +26,15 @@
       "from packages.cog_data import *",
       "",
       "if TYPE_CHECKING:",
-      "    from core.bot import RPMBot",
+      "    from core.bot import RPMTWBot",
       "",
       "",
       "class ${0:CogName}Cog(InitedCog):",
-      "    def __init__(self, bot: \"RPMBot\") -> None:",
+      "    def __init__(self, bot: \"RPMTWBot\") -> None:",
       "        super().__init__(bot)",
       "",
       "",
-      "def setup(bot: \"RPMBot\"):",
+      "def setup(bot: \"RPMTWBot\"):",
       "    bot.add_cog(${0:CogName}Cog(bot))"
     ]
   }

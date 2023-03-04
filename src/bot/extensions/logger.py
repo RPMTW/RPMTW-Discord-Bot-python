@@ -5,11 +5,11 @@ from discord import Color, Embed, Message, TextChannel
 from packages.cog_data import *
 
 if TYPE_CHECKING:
-    from core.bot import RPMBot
+    from core.bot import RPMTWBot
 
 
 class LoggerCog(InitedCog):
-    def __init__(self, bot: "RPMBot") -> None:
+    def __init__(self, bot: "RPMTWBot") -> None:
         super().__init__(bot)
         self.config = self.bot.config[
             f"constant.{'test' if self.bot.test else 'main'}.logger"
@@ -71,5 +71,5 @@ class LoggerCog(InitedCog):
         logging.info(f"{ctx.author} used {ctx.command.name}")
 
 
-def setup(bot: "RPMBot"):
+def setup(bot: "RPMTWBot"):
     bot.add_cog(LoggerCog(bot))

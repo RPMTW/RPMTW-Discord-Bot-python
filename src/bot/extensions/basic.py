@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from packages.cog_data import *
 
 if TYPE_CHECKING:
-    from core.bot import RPMBot
+    from core.bot import RPMTWBot
 
 
 class BasicCog(InitedCog):
@@ -16,5 +16,5 @@ class BasicCog(InitedCog):
         await ctx.respond("WIP")
 
 
-def setup(bot: "RPMBot"):
+def setup(bot: "RPMTWBot"):
     bot.add_cog(BasicCog(bot))

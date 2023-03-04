@@ -10,11 +10,11 @@ from discord import (
 from packages.cog_data import *
 
 if TYPE_CHECKING:
-    from core.bot import RPMBot
+    from core.bot import RPMTWBot
 
 
 class DynamicVoiceCog(InitedCog):
-    def __init__(self, bot: "RPMBot") -> None:
+    def __init__(self, bot: "RPMTWBot") -> None:
         super().__init__(bot)
 
         self.voice_mapping: dict[int, VoiceChannel] = {}
@@ -77,5 +77,5 @@ class DynamicVoiceCog(InitedCog):
                     await sub_channel.delete()
 
 
-def setup(bot: "RPMBot"):
+def setup(bot: "RPMTWBot"):
     bot.add_cog(DynamicVoiceCog(bot))

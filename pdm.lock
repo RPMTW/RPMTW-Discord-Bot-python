@@ -38,6 +38,12 @@ requires_python = ">=3.6"
 summary = "Classes Without Boilerplate"
 
 [[package]]
+name = "bidict"
+version = "0.22.1"
+requires_python = ">=3.7"
+summary = "The bidirectional mapping library for Python."
+
+[[package]]
 name = "charset-normalizer"
 version = "3.0.1"
 summary = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
@@ -76,6 +82,22 @@ requires_python = ">=3.7"
 summary = "Read key-value pairs from a .env file and set them as environment variables"
 
 [[package]]
+name = "python-engineio"
+version = "4.3.4"
+requires_python = ">=3.6"
+summary = "Engine.IO server and client for Python"
+
+[[package]]
+name = "python-socketio"
+version = "5.7.2"
+requires_python = ">=3.6"
+summary = "Socket.IO server and client for Python"
+dependencies = [
+    "bidict>=0.21.0",
+    "python-engineio>=4.3.0",
+]
+
+[[package]]
 name = "yarl"
 version = "1.8.2"
 requires_python = ">=3.7"
@@ -87,7 +109,7 @@ dependencies = [
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:783d8f27c9d8acbfc4129e77bf99e7f2c5466e407040c5bd942003a30ae74a4c"
+content_hash = "sha256:a9a7bd8a918d02b7ea6d5e273eb802fd3296536a8437360cd2d1e69cc9a1c3fc"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
@@ -190,6 +212,10 @@ content_hash = "sha256:783d8f27c9d8acbfc4129e77bf99e7f2c5466e407040c5bd942003a30
 "attrs 22.2.0" = [
     {url = "https://files.pythonhosted.org/packages/21/31/3f468da74c7de4fcf9b25591e682856389b3400b4b62f201e65f15ea3e07/attrs-22.2.0.tar.gz", hash = "sha256:c9227bfc2f01993c03f68db37d1d15c9690188323c067c641f1a35ca58185f99"},
     {url = "https://files.pythonhosted.org/packages/fb/6e/6f83bf616d2becdf333a1640f1d463fef3150e2e926b7010cb0f81c95e88/attrs-22.2.0-py3-none-any.whl", hash = "sha256:29e95c7f6778868dbd49170f98f8818f78f3dc5e0e37c0b1f474e3561b240836"},
+]
+"bidict 0.22.1" = [
+    {url = "https://files.pythonhosted.org/packages/b5/82/ce0b6380f35f49d3fe687979a324c342cfa3588380232f3801db9dd62f9e/bidict-0.22.1-py3-none-any.whl", hash = "sha256:6ef212238eb884b664f28da76f33f1d28b260f665fc737b413b287d5487d1e7b"},
+    {url = "https://files.pythonhosted.org/packages/f2/be/b31e6ea9c94096a323e7a0e2c61480db01f07610bb7e7ea72a06fd1a23a8/bidict-0.22.1.tar.gz", hash = "sha256:1e0f7f74e4860e6d0943a05d4134c63a2fad86f3d4732fb265bd79e4e856d81d"},
 ]
 "charset-normalizer 3.0.1" = [
     {url = "https://files.pythonhosted.org/packages/00/35/830c29e5dab61932224c7a6c89427090164a3e425cf03486ce7a3ce60623/charset_normalizer-3.0.1-cp37-cp37m-musllinux_1_1_i686.whl", hash = "sha256:9d9153257a3f70d5f69edf2325357251ed20f772b12e593f3b3377b5f78e7ef8"},
@@ -444,6 +470,14 @@ content_hash = "sha256:783d8f27c9d8acbfc4129e77bf99e7f2c5466e407040c5bd942003a30
 "python-dotenv 0.21.1" = [
     {url = "https://files.pythonhosted.org/packages/64/62/f19d1e9023aacb47241de3ab5a5d5fedf32c78a71a9e365bb2153378c141/python_dotenv-0.21.1-py3-none-any.whl", hash = "sha256:41e12e0318bebc859fcc4d97d4db8d20ad21721a6aa5047dd59f090391cb549a"},
     {url = "https://files.pythonhosted.org/packages/f5/d7/d548e0d5a68b328a8d69af833a861be415a17cb15ce3d8f0cd850073d2e1/python-dotenv-0.21.1.tar.gz", hash = "sha256:1c93de8f636cde3ce377292818d0e440b6e45a82f215c3744979151fa8151c49"},
+]
+"python-engineio 4.3.4" = [
+    {url = "https://files.pythonhosted.org/packages/45/ba/aa28ea42cbe8a133004f1cfe799bbd11d56f24c6fb588feea4d1dffeb148/python_engineio-4.3.4-py3-none-any.whl", hash = "sha256:7454314a529bba20e745928601ffeaf101c1b5aca9a6c4e48ad397803d10ea0c"},
+    {url = "https://files.pythonhosted.org/packages/7e/ff/970c5d084f513fb38108cd7c90497489d7cff8666f9bfabae00a3f4e13d4/python-engineio-4.3.4.tar.gz", hash = "sha256:d8d8b072799c36cadcdcc2b40d2a560ce09797ab3d2d596b2ad519a5e4df19ae"},
+]
+"python-socketio 5.7.2" = [
+    {url = "https://files.pythonhosted.org/packages/5c/27/3a215e5fc16e371fa8e9bca75d37e120d05c8dd5030905b6657ae8c96d13/python_socketio-5.7.2-py3-none-any.whl", hash = "sha256:d9a9f047e6fdd306c852fbac36516f4b495c2096f8ad9ceb8803b8e5ff5622e3"},
+    {url = "https://files.pythonhosted.org/packages/ee/56/294629986bf6cea96e0edb3933a7f2fac7a079d12909e893903a2effc670/python-socketio-5.7.2.tar.gz", hash = "sha256:92395062d9db3c13d30e7cdedaa0e1330bba78505645db695415f9a3c628d097"},
 ]
 "yarl 1.8.2" = [
     {url = "https://files.pythonhosted.org/packages/02/51/c33498373d2e0ff5d7f3e76038b7057003927d481405780d22f140906b24/yarl-1.8.2-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:2a1fca9588f360036242f379bfea2b8b44cae2721859b1c56d033adfd5893634"},

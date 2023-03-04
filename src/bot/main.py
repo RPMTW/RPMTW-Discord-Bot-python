@@ -6,7 +6,7 @@ from core.extension import extension_list
 from packages.default_data import *
 
 if __name__ == "__main__":
-    dotenv.load_dotenv("./src/bot/config/.env")
+    dotenv.load_dotenv()
 
     bot = RPMBot()
     bot.load_extensions(*(f"extensions.{file}" for file in extension_list))

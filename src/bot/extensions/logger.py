@@ -17,7 +17,7 @@ class LoggerCog(InitedCog):
         self.event_config = None
         self.embed_config = {
             "delete": {"name": "刪除", "color": Color.red()},
-            "edit": {"name": "修改", "color": Color.green()},
+            "edit": {"name": "修改", "color": Color.yellow()},
         }
 
     async def ensure_exist(self):

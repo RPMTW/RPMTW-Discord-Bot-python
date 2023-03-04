@@ -6,7 +6,7 @@ from packages.default_data import Config
 from tomllib import load
 
 
-class RPMBot(Bot):
+class RPMTWBot(Bot):
     def __init__(self):
         data = {}
         for filename in listdir("./src/bot/data"):

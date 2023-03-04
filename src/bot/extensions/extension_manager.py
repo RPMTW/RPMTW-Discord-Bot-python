@@ -5,7 +5,7 @@ from discord.ext.commands import is_owner
 from packages.cog_data import *
 
 if TYPE_CHECKING:
-    from core.bot import RPMBot
+    from core.bot import RPMTWBot
 
 from core.extension import extension_list
 
@@ -42,5 +42,5 @@ class ExtensionManagerCog(InitedCog):
         await self.ext_action(ctx, ext_name, "reload")
 
 
-def setup(bot: "RPMBot"):
+def setup(bot: "RPMTWBot"):
     bot.add_cog(ExtensionManagerCog(bot))

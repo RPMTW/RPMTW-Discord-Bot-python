@@ -2,6 +2,7 @@ import logging
 from os import listdir
 from datetime import datetime
 
+from core.extension import extension_list
 from discord import Bot, Intents
 from packages.default_data import Config
 from tomllib import load
@@ -26,4 +27,5 @@ class RPMTWBot(Bot):
         )
 
     async def on_ready(self):
+        self.load_extensions(*(f"extensions.{file}" for file in extension_list()))
         logging.info("bot is ready")

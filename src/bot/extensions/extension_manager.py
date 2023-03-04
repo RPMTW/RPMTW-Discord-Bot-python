@@ -23,21 +23,21 @@ class ExtensionManagerCog(InitedCog):
     @ExtensionManagerSlashCommandGroup.command()
     @is_owner()
     async def load(
-        self, ctx: ApplicationContext, ext_name: Option(str, choices=extension_list)  # type: ignore
+        self, ctx: ApplicationContext, ext_name: Option(str, choices=extension_list())  # type: ignore
     ):
         await self.ext_action(ctx, ext_name, "load")
 
     @ExtensionManagerSlashCommandGroup.command()
     @is_owner()
     async def unload(
-        self, ctx: ApplicationContext, ext_name: Option(str, choices=extension_list)  # type: ignore
+        self, ctx: ApplicationContext, ext_name: Option(str, choices=extension_list())  # type: ignore
     ):
         await self.ext_action(ctx, ext_name, "unload")
 
     @ExtensionManagerSlashCommandGroup.command()
     @is_owner()
     async def reload(
-        self, ctx: ApplicationContext, ext_name: Option(str, choices=extension_list)  # type: ignore
+        self, ctx: ApplicationContext, ext_name: Option(str, choices=extension_list())  # type: ignore
     ):
         await self.ext_action(ctx, ext_name, "reload")
 

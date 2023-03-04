@@ -4,7 +4,7 @@ from pathlib import Path
 from core.bot import RPMTWBot
 from discord import Cog
 
-extension_list = [i.stem for i in Path("./src/bot/extensions").glob("*.py")]
+extension_list = lambda: [i.stem for i in Path("./src/bot/extensions").glob("*.py")]
 
 
 class InitedCog(Cog):

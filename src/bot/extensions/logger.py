@@ -11,21 +11,14 @@ if TYPE_CHECKING:
 class LoggerCog(InitedCog):
     def __init__(self, bot: "RPMTWBot") -> None:
         super().__init__(bot)
-        self.config = self.bot.config[
-            f"constant.{self.bot.stat}.logger"
-        ]
-        self.event_config = None
+        self.config = self.bot.config[f"constant.{self.bot.stat}.logger"]
+        self.event_config = {
+            "msg": {"channel": self.bot.get_channel(self.config["msg"]["channel_id"])}
+        }
         self.embed_config = {
             "delete": {"name": "刪除", "color": Color.red()},
             "edit": {"name": "修改", "color": Color.yellow()},
         }
-
-    async def ensure_exist(self):
-        await self.bot.wait_until_ready()
-        if not self.event_config:
-            self.event_config = {
-                "msg": {"channel": self.bot.get_channel(self.config["msg"]["channel_id"])}
-            }
 
     def embed_gen(self, type_: str, *msgs: Message):
         translated_type, color = self.embed_config[type_].values()
@@ -48,14 +41,12 @@ class LoggerCog(InitedCog):
 
     @InitedCog.listener()
     async def on_message_delete(self, msg: Message):
-        await self.ensure_exist()
         channel: TextChannel = self.event_config["msg"]["channel"]  # type: ignore
         await channel.send(embed=self.embed_gen("delete", msg))
         logging.info(f"{msg.author} delete message:\n" f"\t{msg.content}")
 
     @InitedCog.listener()
     async def on_message_edit(self, before_msg: Message, after_msg: Message):
-        await self.ensure_exist()
         channel: TextChannel = self.event_config["msg"]["channel"]  # type: ignore
         await channel.send(embed=self.embed_gen("edit", before_msg, after_msg))
         logging.info(

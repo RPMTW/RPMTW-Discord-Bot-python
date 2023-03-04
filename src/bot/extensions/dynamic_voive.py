@@ -19,12 +19,7 @@ class DynamicVoiceCog(InitedCog):
 
         self.voice_mapping: dict[int, VoiceChannel] = {}
         self.config = self.bot.config[f"constant.{self.bot.stat}.dynamic.voice"]
-        self.main_channel: VoiceChannel = None  # type: ignore
-
-    async def ensure_exist(self):
-        await self.bot.wait_until_ready()
-        if not self.main_channel:
-            self.main_channel = self.bot.get_channel(self.config["channel_id"])  # type: ignore
+        self.main_channel: VoiceChannel = self.bot.get_channel(self.config["channel_id"])  # type: ignore
 
     @InitedCog.listener()
     async def on_voice_state_update(
@@ -32,8 +27,6 @@ class DynamicVoiceCog(InitedCog):
     ):
         if member.bot:
             return
-
-        await self.ensure_exist()
 
         # leave/move from exclusive channel
         if (

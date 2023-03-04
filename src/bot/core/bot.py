@@ -1,6 +1,6 @@
 import logging
-from os import listdir
 from datetime import datetime
+from os import listdir
 
 from core.extension import extension_list
 from discord import Bot, Intents
@@ -16,6 +16,7 @@ class RPMTWBot(Bot):
                 data[filename.removesuffix(".toml")] = load(file)
         self.config = Config(data)
         self.test: bool = self.config["constant.is_test"]  # type: ignore
+        self.stat = "test" if self.test else "main"
         self.online_time = datetime.now()
 
         intents = Intents.default()
@@ -23,7 +24,7 @@ class RPMTWBot(Bot):
         intents.members = True
         super().__init__(
             intents=intents,
-            **self.config[f"constant.{'test' if self.test else 'main'}.bot.settings"],
+            **self.config[f"constant.{self.stat}.bot.settings"],
         )
 
     async def on_ready(self):

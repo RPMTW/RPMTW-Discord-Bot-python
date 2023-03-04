@@ -19,7 +19,7 @@ class BasicCog(InitedCog):
     @commands.slash_command()
     async def info(self, ctx: ApplicationContext):
         embed = Embed(color=Color.dark_gray())
-        embed.set_author(name=f"{self.bot.user}", icon_url=self.bot.user.avatar.url)
+        embed.set_author(name=f"{self.bot.user}", icon_url=self.bot.user.avatar.url) # type: ignore
         for name, value, inline in (
             (
                 "正常運作時間",

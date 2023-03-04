@@ -12,7 +12,7 @@ class LoggerCog(InitedCog):
     def __init__(self, bot: "RPMTWBot") -> None:
         super().__init__(bot)
         self.config = self.bot.config[
-            f"constant.{'test' if self.bot.test else 'main'}.logger"
+            f"constant.{self.bot.stat}.logger"
         ]
         self.event_config = None
         self.embed_config = {

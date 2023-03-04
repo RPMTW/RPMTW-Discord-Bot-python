@@ -18,9 +18,7 @@ class DynamicVoiceCog(InitedCog):
         super().__init__(bot)
 
         self.voice_mapping: dict[int, VoiceChannel] = {}
-        self.config = self.bot.config[
-            f"constant.{'test' if self.bot.test else 'main'}.dynamic.voice"
-        ]
+        self.config = self.bot.config[f"constant.{self.bot.stat}.dynamic.voice"]
         self.main_channel: VoiceChannel = None  # type: ignore
 
     async def ensure_exist(self):

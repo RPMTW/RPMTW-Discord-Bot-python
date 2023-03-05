@@ -1,8 +1,9 @@
 import logging
 from datetime import datetime
-from os import listdir
+from os import environ, listdir
 
 from core.extension import extension_list
+from core.universe_chat import RPMTWApiClient
 from discord import Bot, Intents
 from packages.default_data import Config
 from tomllib import load
@@ -18,6 +19,7 @@ class RPMTWBot(Bot):
         self.test: bool = self.config["constant.is_test"]  # type: ignore
         self.stat = "test" if self.test else "main"
         self.online_time = datetime.now()
+        self.rpmtw_api_client = None
 
         intents = Intents.default()
         intents.message_content = True
@@ -27,6 +29,13 @@ class RPMTWBot(Bot):
             **self.config[f"constant.{self.stat}.bot.settings"],
         )
 
+    def get_rpmtw_api_client(self):
+        if not self.rpmtw_api_client:
+            self.rpmtw_api_client = RPMTWApiClient(self)
+
+        return self.rpmtw_api_client
+
     async def on_ready(self):
         self.load_extensions(*(f"extensions.{file}" for file in extension_list()))
+        await self.get_rpmtw_api_client().connect(environ.get("CHAT_TOKEN"))
         logging.info("bot is ready")

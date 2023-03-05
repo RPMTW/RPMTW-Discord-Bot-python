@@ -13,6 +13,8 @@ category_id = 815819581440262145
 channel_id = 832849374395760660
 
 [main.unichat]
+api_base_url = "https://api.rpmtw.com:2087"
+guild_id = 815819580840607807
 channel_id = 1033586182254231592
 
 # ========================================================= #
@@ -28,4 +30,6 @@ category_id = 1081036755542749225
 channel_id = 1081083466608803860
 
 [test.unichat]
+api_base_url = "http://localhost:2087"
+guild_id = 1077436291563671603
 channel_id = 1081459641894055986

@@ -22,7 +22,8 @@ class RPMTWApiClient:
         self.received_data: Queue[dict] = Queue()
         self.id_uuid = bidict()
         self.channel: TextChannel = bot.get_channel(config["channel_id"])  # type: ignore
-        self.webhook: Webhook = None  # type: ignore
+        self.webhook: Webhook | None = None
+        self.emoji_data: dict | None = None
 
         @self.sio.event
         def connect():
@@ -56,10 +57,6 @@ class RPMTWApiClient:
                 logging.error(f"Send cosmic chat message to discord failed: {e}")
 
         self.api_base_url = config["api_base_url"]
-        self.emoji_data = {
-            emoji.name: str(emoji.id)
-            for emoji in bot.get_guild(config["guild_id"]).emojis  # type: ignore
-        }
 
     async def get_webhook(self):
         if not self.webhook:
@@ -177,7 +174,7 @@ class RPMTWApiClient:
 
         for _ in pattern.finditer(message):
             message = message.replace(
-                _.group(0), f"<:{_.group(1)}:{self.emoji_data[_.group(1)]}>"
+                _.group(0), f"<:{_.group(1)}:{self.get_emoji_data()[_.group(1)]}>"
             )
 
         return message

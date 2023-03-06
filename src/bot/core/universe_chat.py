@@ -56,7 +56,7 @@ class RPMTWApiClient:
                 logging.error(f"Send cosmic chat message to discord failed: {e}")
 
         self.api_base_url = (
-            "https://localhost:2087" if bot.test else "https://api.rpmtw.com:2087"
+            "https://localhost:2087" if bot.in_dev else "https://api.rpmtw.com:2087"
         )
         self.emoji_data = {
             emoji.name: str(emoji.id)
@@ -99,7 +99,9 @@ class RPMTWApiClient:
 
     @staticmethod
     def decode_data(data: list[int]) -> dict:
-        return loads("".join(chr(_) for _ in data).encode("raw_unicode_escape").decode())
+        return loads(
+            "".join(chr(_) for _ in data).encode("raw_unicode_escape").decode()
+        )
 
     @staticmethod
     def encode_data(data: dict):
@@ -130,7 +132,8 @@ class RPMTWApiClient:
         uuid = str()
         reply_message_uuid = (
             self.id_uuid.get(reply_message.id)
-            if (reference := message.reference) and (reply_message := reference.resolved)
+            if (reference := message.reference)
+            and (reply_message := reference.resolved)
             else None
         )
         data = {

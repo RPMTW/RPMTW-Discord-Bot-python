@@ -19,17 +19,17 @@ channel_id = 1033586182254231592
 
 # ========================================================= #
 
-[in_dev.bot.settings]
+[dev.bot.settings]
 debug_guilds = [1077436291563671603]
 
-[in_dev.dynamic.voice]
+[dev.dynamic.voice]
 channel_id = 1081036813591924817
 category_id = 1081036755542749225
 
-[in_dev.logger.msg]
+[dev.logger.msg]
 channel_id = 1081083466608803860
 
-[in_dev.unichat]
+[dev.unichat]
 api_base_url = "http://localhost:2087"
 guild_id = 1077436291563671603
 channel_id = 1081459641894055986

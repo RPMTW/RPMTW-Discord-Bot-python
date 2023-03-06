@@ -2,17 +2,17 @@ is_dev = true
 
 # ========================================================= #
 
-[main.bot.settings]
+[main.bot_settings]
 debug_guilds = [815819580840607807, 1077436291563671603]
 
-[main.dynamic.voice]
+[main.DynamicVoiceCog]
 channel_id = 832895058281758740
 category_id = 815819581440262145
 
-[main.logger.msg]
+[main.LoggerCog.msg]
 channel_id = 832849374395760660
 
-[main.unichat]
+[main.UniverseChat]
 api_base_url = "https://api.rpmtw.com:2087"
 guild_id = 815819580840607807
 channel_id = 1033586182254231592
@@ -22,14 +22,14 @@ channel_id = 1033586182254231592
 [dev.bot.settings]
 debug_guilds = [1077436291563671603]
 
-[dev.dynamic.voice]
+[dev.DynamicVoiceCog]
 channel_id = 1081036813591924817
 category_id = 1081036755542749225
 
-[dev.logger.msg]
+[dev.LoggerCog.msg]
 channel_id = 1081083466608803860
 
-[dev.unichat]
+[dev.UniverseChat]
 api_base_url = "http://localhost:2087"
 guild_id = 1077436291563671603
 channel_id = 1081459641894055986

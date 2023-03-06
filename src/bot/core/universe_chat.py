@@ -168,7 +168,7 @@ class RPMTWApiClient:
         data = {
             "message": content,
             "username": message.author.name,
-            "userId": message.author.id,
+            "userId": str(message.author.id),
             "avaterUrl": message.author.display_avatar.url,
             "nickname": message.author.nick,  # type: ignore
             "replyMessageUUID": reply_message_uuid if reply_message_uuid else None,

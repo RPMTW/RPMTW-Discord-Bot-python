@@ -41,7 +41,14 @@
    pdm sync
    ```
 
-5. **Run Script**
+5. **Type Token**
+   Type your discord bot token and universe chat token into [`./.env`](./.env)
+   ```py
+   BOT_TOKEN = "" # Discord token
+   CHAT_TOKEN = "" # Universe Chat token
+   ```
+
+6. **Run Script**
    
    1. Windows
       ```hs

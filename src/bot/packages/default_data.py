@@ -24,20 +24,6 @@ class Config:
         return data
 
 
-class CommandChecks:
-    # @staticmethod
-    # def is_developer():
-    #     def predicate(ctx):
-    #         return ctx.author.id in {
-    #             467532880625664000,  # YT Mango#4092
-    #             645588343228334080,  # 菘菘#8663
-    #             577086242806693898,  # Euxcbsks#5316
-    #         }
-
-    #     return check(predicate)
-    pass
-
-
 __all__ = [
     "logging",
     "discord",
@@ -45,5 +31,4 @@ __all__ = [
     "Bot",
     "commands",
     "Config",
-    "CommandChecks",
 ]

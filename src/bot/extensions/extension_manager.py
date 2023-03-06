@@ -11,7 +11,9 @@ from core.extension import extension_list
 
 
 class ExtensionManagerCog(InitedCog):
-    ExtensionManagerSlashCommandGroup = commands.SlashCommandGroup("ext-manager")
+    ExtensionManagerSlashCommandGroup = commands.SlashCommandGroup(
+        "ext-manager", guild_ids=[1077436291563671603]
+    )
 
     async def ext_action(self, ctx: ApplicationContext, ext_name: str, action: str):
         try:

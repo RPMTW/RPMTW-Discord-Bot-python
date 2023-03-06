@@ -16,17 +16,12 @@ class RPMTWBot(Bot):
             is_dev: bool = data["is_dev"]
             self.config: dict = data["test" if is_dev else "main"]
 
-        self.test: bool = self.config["constant.is_test"]  # type: ignore
-        self.stat = "test" if self.test else "main"
         self.online_time = datetime.now()
 
         intents = Intents.default()
         intents.message_content = True
         intents.members = True
-        super().__init__(
-            intents=intents,
-            **self.config[f"constant.{self.stat}.bot.settings"],
-        )
+        super().__init__(intents=intents, **self.config["bot_settings"])
 
         self.rpmtw_api_client = RPMTWApiClient(self, self.config["UniverseChat"])
 

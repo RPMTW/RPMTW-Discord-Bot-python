@@ -16,6 +16,8 @@ if TYPE_CHECKING:
 
 class RPMTWApiClient:
     def __init__(self, bot: "RPMTWBot", config: dict) -> None:
+        self.bot = bot
+        self.config = config
         self.sio = AsyncClient()
         self.received_data: Queue[dict] = Queue()
         self.id_uuid = bidict()
@@ -65,6 +67,15 @@ class RPMTWApiClient:
             self.webhook = webhooks[0]
 
         return self.webhook
+
+    def get_emoji_data(self):
+        if not self.emoji_data:
+            self.emoji_data = {
+                emoji.name: str(emoji.id)
+                for emoji in self.bot.get_guild(self.config["guild_id"]).emojis  # type: ignore
+            }
+
+        return self.emoji_data
 
     async def get_message_data_by_uuid(self, uuid) -> dict:
         link = f"{self.api_base_url}/universe-chat/view/{uuid}"

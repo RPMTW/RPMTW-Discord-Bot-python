@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING
 
 from aiohttp import ClientSession
 from bidict import bidict
-from discord import DiscordException, Webhook
+from discord import DiscordException
 from socketio import AsyncClient
 
 if TYPE_CHECKING:
     from core.bot import RPMTWBot
-    from discord import Message, TextChannel
+    from discord import Message, TextChannel, Webhook
 
 
 class RPMTWApiClient:
@@ -22,8 +22,6 @@ class RPMTWApiClient:
         self.received_data: Queue[dict] = Queue()
         self.id_uuid = bidict()
         self._maybe_none = {}
-        self.webhook: Webhook | None = None
-        self.emoji_data: dict | None = None
 
         @self.sio.event
         def connect():
@@ -58,36 +56,52 @@ class RPMTWApiClient:
 
         self.api_base_url = config["api_base_url"]
 
-    def get_channel(self):
-        if not (channel := self._maybe_none.get("channel")) and (
-            channel := self.bot.get_channel(self.config["channel_id"])
-        ):
-            if not isinstance(channel, TextChannel):
-                raise TypeError(
-                    f"Channel with id `{self.config['channel_id']}` is not a Text Channel"
-                )
-
-            self._maybe_none["channel"] = channel
+    def get_channel(self) -> TextChannel:
+        if channel := self._maybe_none.get("channel"):
             return channel
-        raise ValueError(
-            f"Cannot find channel with id `{self.config['channel_id']}`, maybe channel not exist or bot is not ready"
-        )
 
-    async def get_webhook(self):
-        if not self.webhook:
-            webhooks = await self.get_channel().webhooks()
-            self.webhook = webhooks[0]
+        if not (channel := self.bot.get_channel(self.config["channel_id"])):
+            raise ValueError(
+                f"Cannot find channel with id `{self.config['channel_id']}`, maybe channel not exist or bot is not ready?"
+            )
 
-        return self.webhook
+        if not isinstance(channel, TextChannel):
+            raise TypeError(
+                f"Channel with id `{self.config['channel_id']}` is not a Text Channel"
+            )
 
-    def get_emoji_data(self):
-        if not self.emoji_data:
-            self.emoji_data = {
-                emoji.name: str(emoji.id)
-                for emoji in self.bot.get_guild(self.config["guild_id"]).emojis  # type: ignore
-            }
+        self._maybe_none["channel"] = channel
+        return channel
 
-        return self.emoji_data
+    async def get_webhook(self) -> "Webhook":
+        if webhook := self._maybe_none.get("webhook"):
+            return webhook
+
+        webhooks = await self.get_channel().webhooks()
+
+        try:
+            webhook = webhooks[0]
+        except IndexError as e:
+            raise TypeError(
+                f"Channel with id `{self.config['channel_id']}` has no webhook(s)"
+            ) from e
+
+        self._maybe_none["webhook"] = webhook
+        return webhook
+
+    def get_emoji_data(self) -> dict[str, str]:
+        if emoji_data := self._maybe_none["emoji_data"]:
+            return emoji_data
+
+        if not (guild := self.bot.get_guild(self.config["guild_id"])):
+            raise ValueError(
+                f"Cannot find guild with id `{self.config['guild_id']}`, maybe guild not exist or bot is not ready?"
+            )
+
+        self._maybe_none["emoji_data"] = emoji_data = {
+            emoji.name: str(emoji.id) for emoji in guild.emojis
+        }
+        return emoji_data
 
     async def get_message_data_by_uuid(self, uuid) -> dict:
         link = f"{self.api_base_url}/universe-chat/view/{uuid}"

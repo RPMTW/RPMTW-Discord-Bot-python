@@ -19,7 +19,7 @@ channel_id = 1033586182254231592
 
 # ========================================================= #
 
-[dev.bot.settings]
+[dev.bot_settings]
 debug_guilds = [1077436291563671603]
 
 [dev.DynamicVoiceCog]

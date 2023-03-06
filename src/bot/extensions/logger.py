@@ -24,7 +24,7 @@ class LoggerCog(InitedCog):
         msg = msgs[0]
         embed = Embed(
             title=f"訊息{translated_type}紀錄",
-            description=f"{msg.author.mention}在{msg.channel.mention}{translated_type}了訊息",  # type: ignore
+            description=f"{msg.author.mention} 在 {msg.channel.mention} 的訊息被{translated_type}了",  # type: ignore
             color=color,
         ).set_footer(text=datetime.now(tz=timezone(timedelta(hours=8))).strftime(r"%A"))
 

@@ -11,7 +11,7 @@ from socketio import AsyncClient
 
 if TYPE_CHECKING:
     from core.bot import RPMTWBot
-    from discord import Message, Webhook
+    from discord import Message, Webhook, WebhookMessage
 
 
 class RPMTWApiClient:
@@ -45,7 +45,7 @@ class RPMTWApiClient:
             webhook = await self.get_webhook()
 
             try:
-                discord_message: Message = await webhook.send(
+                discord_message: WebhookMessage = await webhook.send(
                     await self.get_content(decoded_data),
                     avatar_url=decoded_data["avatarUrl"],
                     username=self._format_nickname(decoded_data),

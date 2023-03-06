@@ -10,7 +10,6 @@ if TYPE_CHECKING:
 class UniverseChat(InitedCog):
     def __init__(self, bot: "RPMTWBot") -> None:
         super().__init__(bot)
-        self.config = self.bot.config[f"constant.{self.bot.stat}.unichat"]
         self.channel_id: int = self.config["channel_id"]
 
     @InitedCog.listener()

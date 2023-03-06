@@ -11,7 +11,6 @@ if TYPE_CHECKING:
 class LoggerCog(InitedCog):
     def __init__(self, bot: "RPMTWBot") -> None:
         super().__init__(bot)
-        self.config = self.bot.config[f"constant.{self.bot.stat}.logger"]
         self.event_config = {
             "msg": {"channel": self.bot.get_channel(self.config["msg"]["channel_id"])}
         }

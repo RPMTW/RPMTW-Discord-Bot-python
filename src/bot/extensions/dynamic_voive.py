@@ -18,7 +18,6 @@ class DynamicVoiceCog(InitedCog):
         super().__init__(bot)
 
         self.voice_mapping: dict[int, VoiceChannel] = {}
-        self.config = self.bot.config[f"constant.{self.bot.stat}.dynamic.voice"]
         self.main_channel: VoiceChannel = self.bot.get_channel(self.config["channel_id"])  # type: ignore
 
     @InitedCog.listener()

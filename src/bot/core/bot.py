@@ -11,11 +11,11 @@ from tomllib import load
 
 class RPMTWBot(Bot):
     def __init__(self):
-        data = {}
-        for filename in listdir("./src/bot/data"):
-            with open(f"./src/bot/data/{filename}", "rb") as file:
-                data[filename.removesuffix(".toml")] = load(file)
-        self.config = Config(data)
+        with open("./constant.toml", "rb") as file:
+            data = load(file)
+            is_dev: bool = data["is_dev"]
+            self.config: dict = data["test" if is_dev else "main"]
+
         self.test: bool = self.config["constant.is_test"]  # type: ignore
         self.stat = "test" if self.test else "main"
         self.online_time = datetime.now()

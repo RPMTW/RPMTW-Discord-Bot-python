@@ -15,12 +15,10 @@ if TYPE_CHECKING:
 
 
 class RPMTWApiClient:
-    def __init__(self, bot: "RPMTWBot") -> None:
+    def __init__(self, bot: "RPMTWBot", config: dict) -> None:
         self.sio = AsyncClient()
         self.received_data: Queue[dict] = Queue()
         self.id_uuid = bidict()
-
-        config = bot.config[f"constant.{bot.stat}.unichat"]
         self.channel: TextChannel = bot.get_channel(config["channel_id"])  # type: ignore
         self.webhook: Webhook = None  # type: ignore
 
@@ -55,9 +53,7 @@ class RPMTWApiClient:
             except DiscordException as e:
                 logging.error(f"Send cosmic chat message to discord failed: {e}")
 
-        self.api_base_url = (
-            "https://localhost:2087" if bot.in_dev else "https://api.rpmtw.com:2087"
-        )
+        self.api_base_url = config["api_base_url"]
         self.emoji_data = {
             emoji.name: str(emoji.id)
             for emoji in bot.get_guild(config["guild_id"]).emojis  # type: ignore

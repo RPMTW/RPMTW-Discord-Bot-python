@@ -31,7 +31,7 @@ class RPMTWBot(Bot):
 
     def get_rpmtw_api_client(self):
         if not self.rpmtw_api_client:
-            self.rpmtw_api_client = RPMTWApiClient(self)
+            self.rpmtw_api_client = RPMTWApiClient(self, self.config["UniverseChat"])
 
         return self.rpmtw_api_client
 

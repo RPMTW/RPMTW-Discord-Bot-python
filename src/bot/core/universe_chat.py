@@ -49,6 +49,7 @@ class RPMTWApiClient:
                     await self.get_content(decoded_data),
                     avatar_url=decoded_data["avatarUrl"],
                     username=self._format_nickname(decoded_data),
+                    wait=True
                 )  # type: ignore
                 self.id_uuid[discord_message.id] = decoded_data["uuid"]
             except DiscordException as e:

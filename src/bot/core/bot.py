@@ -23,7 +23,7 @@ class RPMTWBot(Bot):
         super().__init__(intents=intents, **self.config["bot_settings"])
 
         self.rpmtw_api_client = RPMTWApiClient(self, self.config["UniverseChat"])
-        self.token = environ["TEST_TOKEN" if is_dev else "TOKEN"]
+        self.token = environ["TEST_BOT_TOKEN" if is_dev else "BOT_TOKEN"]
 
     async def on_ready(self):
         self.load_extensions(*(f"extensions.{file}" for file in extension_list()))

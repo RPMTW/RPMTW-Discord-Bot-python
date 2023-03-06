@@ -160,7 +160,6 @@ class RPMTWApiClient:
         if attachments := message.attachments:
             content += "".join(f"\n{attachment.url}" for attachment in attachments)
 
-        uuid = str()
         reply_message_uuid = (
             self.id_uuid.get(reply_message.id)
             if (reference := message.reference) and (reply_message := reference.resolved)
@@ -175,17 +174,14 @@ class RPMTWApiClient:
             "replyMessageUUID": reply_message_uuid if reply_message_uuid else None,
         }
 
-        def callback(_uuid: str):
-            nonlocal uuid
-            uuid = _uuid
+        def callback(uuid: str):
+            self.id_uuid[message.id] = uuid
 
         await self.sio.emit(
             "discordMessage",
             self.encode_data(data),
             callback=callback,
         )
-
-        self.id_uuid[message.id] = uuid
 
     @staticmethod
     def _format_nickname(data: dict) -> str:

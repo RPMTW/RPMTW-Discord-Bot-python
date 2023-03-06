@@ -1,9 +1,9 @@
-is_test = true
+is_dev = true
 
 # ========================================================= #
 
 [main.bot.settings]
-debug_guilds = [815819580840607807]
+debug_guilds = [815819580840607807, 1077436291563671603]
 
 [main.dynamic.voice]
 channel_id = 832895058281758740
@@ -19,17 +19,17 @@ channel_id = 1033586182254231592
 
 # ========================================================= #
 
-[test.bot.settings]
+[in_dev.bot.settings]
 debug_guilds = [1077436291563671603]
 
-[test.dynamic.voice]
+[in_dev.dynamic.voice]
 channel_id = 1081036813591924817
 category_id = 1081036755542749225
 
-[test.logger.msg]
+[in_dev.logger.msg]
 channel_id = 1081083466608803860
 
-[test.unichat]
+[in_dev.unichat]
 api_base_url = "http://localhost:2087"
 guild_id = 1077436291563671603
 channel_id = 1081459641894055986

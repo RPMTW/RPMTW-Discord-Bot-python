@@ -21,7 +21,7 @@ class RPMTWApiClient:
         self.sio = AsyncClient()
         self.received_data: Queue[dict] = Queue()
         self.id_uuid = bidict()
-        self.channel: TextChannel = bot.get_channel(config["channel_id"])  # type: ignore
+        self._maybe_none = {}
         self.webhook: Webhook | None = None
         self.emoji_data: dict | None = None
 
@@ -58,9 +58,24 @@ class RPMTWApiClient:
 
         self.api_base_url = config["api_base_url"]
 
+    def get_channel(self):
+        if not (channel := self._maybe_none.get("channel")) and (
+            channel := self.bot.get_channel(self.config["channel_id"])
+        ):
+            if not isinstance(channel, TextChannel):
+                raise TypeError(
+                    f"Channel with id `{self.config['channel_id']}` is not a Text Channel"
+                )
+
+            self._maybe_none["channel"] = channel
+            return channel
+        raise ValueError(
+            f"Cannot find channel with id `{self.config['channel_id']}`, maybe channel not exist or bot is not ready"
+        )
+
     async def get_webhook(self):
         if not self.webhook:
-            webhooks = await self.channel.webhooks()
+            webhooks = await self.get_channel().webhooks()
             self.webhook = webhooks[0]
 
         return self.webhook
@@ -93,7 +108,7 @@ class RPMTWApiClient:
             # Data not in memory, so treat it as in game message
             return f"回覆 {self._format_nickname(reply_message_data)}: {reply_message_data['message']}\n> {content}"
 
-        discord_message = await self.channel.fetch_message(discord_message_id)
+        discord_message = await self.get_channel().fetch_message(discord_message_id)
 
         return (
             f"回覆 {self._format_nickname(reply_message_data)}: {reply_message_data['message']}\n> {content}"

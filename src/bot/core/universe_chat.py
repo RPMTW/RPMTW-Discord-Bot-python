@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING
 
 from aiohttp import ClientSession
 from bidict import bidict
-from discord import DiscordException
+from discord import DiscordException, TextChannel
 from socketio import AsyncClient
 
 if TYPE_CHECKING:
     from core.bot import RPMTWBot
-    from discord import Message, TextChannel, Webhook
+    from discord import Message, Webhook
 
 
 class RPMTWApiClient:

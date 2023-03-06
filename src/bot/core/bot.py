@@ -15,7 +15,7 @@ class RPMTWBot(Bot):
         with open("./constant.toml", "rb") as file:
             data = load(file)
             is_dev: bool = data["is_dev"]
-            self.config: dict = data["test" if is_dev else "main"]
+            self.config: dict = data["dev" if is_dev else "main"]
 
         intents = Intents.default()
         intents.message_content = True

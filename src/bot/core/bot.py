@@ -19,7 +19,6 @@ class RPMTWBot(Bot):
         self.test: bool = self.config["constant.is_test"]  # type: ignore
         self.stat = "test" if self.test else "main"
         self.online_time = datetime.now()
-        self.rpmtw_api_client = None
 
         intents = Intents.default()
         intents.message_content = True
@@ -29,13 +28,9 @@ class RPMTWBot(Bot):
             **self.config[f"constant.{self.stat}.bot.settings"],
         )
 
-    def get_rpmtw_api_client(self):
-        if not self.rpmtw_api_client:
-            self.rpmtw_api_client = RPMTWApiClient(self, self.config["UniverseChat"])
-
-        return self.rpmtw_api_client
+        self.rpmtw_api_client = RPMTWApiClient(self, self.config["UniverseChat"])
 
     async def on_ready(self):
         self.load_extensions(*(f"extensions.{file}" for file in extension_list()))
-        await self.get_rpmtw_api_client().connect(environ.get("CHAT_TOKEN"))
+        await self.rpmtw_api_client.connect(environ.get("CHAT_TOKEN"))
         logging.info("bot is ready")

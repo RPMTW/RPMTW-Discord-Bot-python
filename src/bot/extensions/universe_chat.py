@@ -17,7 +17,7 @@ class UniverseChat(InitedCog):
         if message.channel.id != self.channel_id or message.author.bot:
             return
 
-        await self.bot.get_rpmtw_api_client().send_discord_message(message)
+        await self.bot.rpmtw_api_client.send_discord_message(message)
 
 
 def setup(bot: "RPMTWBot"):

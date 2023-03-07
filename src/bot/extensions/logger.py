@@ -12,9 +12,7 @@ if TYPE_CHECKING:
 class LoggerCog(InitedCog):
     def __init__(self, bot: "RPMTWBot") -> None:
         super().__init__(bot)
-        self.event_config = {
-            "msg": {"channel": self.bot.get_channel(self.config["msg"]["channel_id"])}
-        }
+        self.event_config = {"msg": {"channel": self.get_log_channel()}}
         self.embed_config = {
             "delete": {"name": "刪除", "color": Color.red()},
             "edit": {"name": "修改", "color": Color.yellow()},
@@ -50,7 +48,7 @@ class LoggerCog(InitedCog):
 
     @InitedCog.listener()
     async def on_message_delete(self, msg: Message):
-        channel: TextChannel = self.event_config["msg"]["channel"]  # type: ignore
+        channel = self.event_config["msg"]["channel"]
         await channel.send(embed=self.embed_gen("delete", msg))
         logging.info(f"{msg.author} delete message:\n" f"\t{msg.content}")
 
@@ -61,7 +59,7 @@ class LoggerCog(InitedCog):
         if before_msg.content == after_msg.content:
             return
 
-        channel: TextChannel = self.event_config["msg"]["channel"]  # type: ignore
+        channel = self.event_config["msg"]["channel"]
         await channel.send(embed=self.embed_gen("edit", before_msg, after_msg))
         logging.info(
             f"{before_msg.author}'s message have deleted\n"

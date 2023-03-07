@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from aiohttp import ClientSession
 from bidict import bidict
 from discord import DiscordException, TextChannel
+from exceptions import ChannelNotFoundError, ChannelTypeError
 from socketio import AsyncClient
 
 if TYPE_CHECKING:
@@ -49,7 +50,7 @@ class RPMTWApiClient:
                     await self.get_content(decoded_data),
                     avatar_url=decoded_data["avatarUrl"],
                     username=self._format_nickname(decoded_data),
-                    wait=True
+                    wait=True,
                 )  # type: ignore
                 self.id_uuid[discord_message.id] = decoded_data["uuid"]
             except DiscordException as e:
@@ -62,14 +63,10 @@ class RPMTWApiClient:
             return channel
 
         if not (channel := self.bot.get_channel(self.config["channel_id"])):
-            raise ValueError(
-                f"Cannot find channel with id `{self.config['channel_id']}`, maybe channel not exist or bot is not ready?"
-            )
+            raise ChannelNotFoundError(self.config["channel_id"])
 
         if not isinstance(channel, TextChannel):
-            raise TypeError(
-                f"Channel with id `{self.config['channel_id']}` is not a Text Channel"
-            )
+            raise ChannelTypeError(self.config["channel_id"], "TextChannel")
 
         self._maybe_none["channel"] = channel
         return channel

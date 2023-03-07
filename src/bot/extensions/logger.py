@@ -56,6 +56,11 @@ class LoggerCog(InitedCog):
 
     @InitedCog.listener()
     async def on_message_edit(self, before_msg: Message, after_msg: Message):
+        # on_messaege_edit will be call when a Message receives an update event(not only edit)
+        # https://docs.pycord.dev/en/stable/api/events.html#discord.on_message_edit
+        if before_msg.content == after_msg.content:
+            return
+
         channel: TextChannel = self.event_config["msg"]["channel"]  # type: ignore
         await channel.send(embed=self.embed_gen("edit", before_msg, after_msg))
         logging.info(

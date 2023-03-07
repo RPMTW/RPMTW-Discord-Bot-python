@@ -62,6 +62,7 @@ class RPMTWApiClient:
                 logging.error(f"Send cosmic chat message to discord failed: {e}")
 
         self.api_base_url = config["api_base_url"]
+        self.universe_chat_base_url = config["universe_chat_base_url"]
 
     def get_channel(self) -> TextChannel:
         if channel := self._maybe_none.get("channel"):
@@ -144,7 +145,7 @@ class RPMTWApiClient:
 
     async def connect(self, token: str | None = None):
         await self.sio.connect(
-            self.api_base_url,
+            self.universe_chat_base_url,
             transports="websocket",
             headers={"rpmtw_auth_token": token} if token else {},
         )

@@ -108,7 +108,8 @@ class RPMTWApiClient:
 
         async with ClientSession() as session:
             async with session.get(link) as response:
-                return await response.json()
+                response_data = await response.json()
+                return response_data["data"]
 
     async def get_content(self, decoded_data: dict):
         content: str = decoded_data["message"]

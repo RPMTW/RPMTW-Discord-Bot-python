@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING
 
 from discord import Color, Embed, Message, TextChannel
+from exceptions import ChannelNotFoundError, ChannelTypeError
 from packages.cog_data import *
 
 if TYPE_CHECKING:
@@ -18,6 +19,15 @@ class LoggerCog(InitedCog):
             "delete": {"name": "刪除", "color": Color.red()},
             "edit": {"name": "修改", "color": Color.yellow()},
         }
+
+    def get_log_channel(self):
+        if not (channel := self.bot.get_channel(self.config["msg"]["channel_id"])):
+            raise ChannelNotFoundError(self.config["msg"]["channel_id"])
+
+        if not isinstance(channel, TextChannel):
+            raise ChannelTypeError(channel.id, "TextChannel")
+
+        return channel
 
     def embed_gen(self, type_: str, *msgs: Message):
         translated_type, color = self.embed_config[type_].values()

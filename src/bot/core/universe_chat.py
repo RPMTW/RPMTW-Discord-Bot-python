@@ -7,7 +7,12 @@ from typing import TYPE_CHECKING
 from aiohttp import ClientSession
 from bidict import bidict
 from discord import DiscordException, TextChannel
-from exceptions import ChannelNotFoundError, ChannelTypeError
+from exceptions import (
+    ChannelNotFoundError,
+    ChannelTypeError,
+    GuildNotFoundError,
+    HasNoWebhookError,
+)
 from socketio import AsyncClient
 
 if TYPE_CHECKING:
@@ -80,9 +85,7 @@ class RPMTWApiClient:
         try:
             webhook = webhooks[0]
         except IndexError as e:
-            raise TypeError(
-                f"Channel with id `{self.config['channel_id']}` has no webhook(s)"
-            ) from e
+            raise HasNoWebhookError(self.config["channel_id"]) from e
 
         self._maybe_none["webhook"] = webhook
         return webhook
@@ -92,9 +95,7 @@ class RPMTWApiClient:
             return emoji_data
 
         if not (guild := self.bot.get_guild(self.config["guild_id"])):
-            raise ValueError(
-                f"Cannot find guild with id `{self.config['guild_id']}`, maybe guild not exist or bot is not ready?"
-            )
+            raise GuildNotFoundError(self.config["guild_id"])
 
         self._maybe_none["emoji_data"] = emoji_data = {
             emoji.name: str(emoji.id) for emoji in guild.emojis

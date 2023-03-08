@@ -126,9 +126,9 @@ class RPMTWApiClient:
         discord_message = await self.get_channel().fetch_message(discord_message_id)
 
         return (
-            f"回覆 {self._format_nickname(reply_message_data)}: {reply_message_data['message']}\n> {content}"
+            f"回覆 {self._format_nickname(reply_message_data)}：{reply_message_data['message']}\n> {content}"
             if discord_message.webhook_id
-            else f"回覆 {discord_message.author.mention}: {discord_message.content}\n {content}"
+            else f"回覆 {discord_message.author.mention}：{discord_message.content}\n {content}"
         )
 
     @staticmethod

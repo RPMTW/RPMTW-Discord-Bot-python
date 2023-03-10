@@ -12,7 +12,7 @@ class RPMTWBot(Bot):
     def __init__(self):
         self.online_time = datetime.now()
 
-        with open("./constant.toml", "rb") as file:
+        with open("./data/constant.toml", "rb") as file:
             data = load(file)
             is_dev: bool = data["is_dev"]
             self.config: dict = data["dev" if is_dev else "main"]

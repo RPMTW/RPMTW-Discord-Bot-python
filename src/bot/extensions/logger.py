@@ -62,7 +62,7 @@ class LoggerCog(InitedCog):
         channel = self.event_config["msg"]["channel"]
         await channel.send(embed=self.embed_gen("edit", before_msg, after_msg))
         logging.info(
-            f"{before_msg.author}'s message have deleted\n"
+            f"{before_msg.author}'s message have edited\n"
             "origin message:\n"
             f"\t{before_msg.content}\n"
             "edited message:\n"

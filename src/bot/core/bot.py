@@ -3,7 +3,6 @@ from datetime import datetime
 from os import environ
 from tomllib import load
 
-from core.extension import extension_list
 from core.universe_chat import RPMTWApiClient
 from discord import Bot, Intents
 
@@ -26,7 +25,6 @@ class RPMTWBot(Bot):
         self.token = environ["TEST_BOT_TOKEN" if is_dev else "BOT_TOKEN"]
 
     async def on_ready(self):
-        self.load_extensions(*(f"extensions.{file}" for file in extension_list()))
         await self.rpmtw_api_client.connect(environ.get("CHAT_TOKEN"))
         logging.info("bot is ready")
 

@@ -1,11 +1,11 @@
 import logging
 from datetime import datetime
 from os import environ
+from tomllib import load
 
 from core.extension import extension_list
 from core.universe_chat import RPMTWApiClient
 from discord import Bot, Intents
-from tomllib import load
 
 
 class RPMTWBot(Bot):

@@ -15,6 +15,7 @@ class InitedCog(Cog):
         super().__init__()
         self.bot = bot
         self.config: dict = bot.config.get(self._get_sub_class_name(), {})
+        self._maybe_none = {}
         logging.info(f"load extension - {self.__cog_name__}")
 
     @classmethod

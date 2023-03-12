@@ -1,11 +1,10 @@
-from typing import TYPE_CHECKING
 from datetime import datetime
-
 from os import getpid
-from psutil import Process, virtual_memory
-from discord import Embed, Color
+from typing import TYPE_CHECKING
 
+from discord import Color, Embed
 from packages.cog_data import *
+from psutil import Process, virtual_memory
 
 if TYPE_CHECKING:
     from core.bot import RPMTWBot

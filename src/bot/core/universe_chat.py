@@ -119,7 +119,9 @@ class RPMTWApiClient:
 
         reply_message_data = await self.get_message_data_by_uuid(reply_uuid)
 
-        if not (discord_message_id := self.id_uuid.get(reply_message_data["uuid"])):
+        if not (
+            discord_message_id := self.id_uuid.inverse.get(reply_message_data["uuid"])
+        ):
             # Data not in memory, so treat it as in game message
             return f"回覆 {self._format_nickname(reply_message_data)}: {reply_message_data['message']}\n> {content}"
 

@@ -3,7 +3,7 @@ is_dev = true
 # ========================================================= #
 
 [main.bot_settings]
-debug_guilds = [815819580840607807, 1077436291563671603]
+debug_guilds = [815819580840607807]
 
 [main.DynamicVoiceCog]
 channel_id = 832895058281758740

@@ -7,6 +7,7 @@ from discord import (
     VoiceChannel,
     VoiceState,
 )
+from exceptions import ChannelNotFoundError, ChannelTypeError
 from packages.cog_data import *
 
 if TYPE_CHECKING:
@@ -18,7 +19,20 @@ class DynamicVoiceCog(InitedCog):
         super().__init__(bot)
 
         self.voice_mapping: dict[int, VoiceChannel] = {}
-        self.main_channel: VoiceChannel = self.bot.get_channel(self.config["channel_id"])  # type: ignore
+        self.main_channel = None  # type: ignore
+
+    def get_voice_channel(self) -> VoiceChannel:
+        if _ := self._maybe_none.get("channel_id"):
+            return _
+
+        if not (_ := self.bot.get_channel(channel_id := self.config["channel_id"])):
+            raise ChannelNotFoundError(channel_id)
+
+        if not isinstance(_, VoiceChannel):
+            raise ChannelTypeError(channel_id, "VoiceChannel")
+
+        self._maybe_none["channel_id"] = _
+        return _
 
     @InitedCog.listener()
     async def on_voice_state_update(
@@ -38,7 +52,7 @@ class DynamicVoiceCog(InitedCog):
             logging.info(f"{member} leave his/her exclusive channel(id={channel.id})")
 
         # join/move to main_channel
-        if (channel := after.channel) and channel.id == self.main_channel.id:
+        if (channel := after.channel) and channel.id == self.get_voice_channel().id:
             overwrites = {
                 member: PermissionOverwrite(manage_roles=True, manage_channels=True),
                 member.guild.default_role: PermissionOverwrite(priority_speaker=True),

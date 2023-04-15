@@ -18,11 +18,11 @@ class ChefCog(InitedCog):
 
         if self.chef_data_path.exists():
             with self.chef_data_path.open(encoding="UTF-8") as file:
-                chef_data = bidict(load(file))
+                chef_data = dict(load(file))
         else:
-            chef_data = bidict()
+            chef_data = dict()
 
-        self.chef_data: bidict[str, int] = chef_data
+        self.chef_data: dict[int, int] = chef_data
         self.save_data.start()
 
     ChefSlashCommandGroup = commands.SlashCommandGroup("chef")
@@ -30,14 +30,12 @@ class ChefCog(InitedCog):
     @ChefSlashCommandGroup.command()
     async def rank(self, ctx: ApplicationContext):
         embed = Embed(title="電神排名", description="看看誰最電！ (前 10 名)")
-        inverse_chef_data = self.chef_data.inverse
+        sorted_data = sorted(self.chef_data.items(), key=lambda _: _[1], reverse=True)
 
-        for index, count in enumerate(
-            sorted(self.chef_data.values(), reverse=True)[:10], 1
-        ):
+        for index, rank_data in enumerate(sorted_data, 1):
             embed.add_field(
                 name=f"第 {index} 名",
-                value=f"<@!{inverse_chef_data[count]}> 被廚了 {count} 次",
+                value=f"<@!{rank_data[0]}> 被廚了 {rank_data[1]} 次",
                 inline=False,
             )
 
@@ -54,8 +52,8 @@ class ChefCog(InitedCog):
             return await ctx.respond("您不能廚機器人")
 
         # get -> +1 -> assigned to `count`, update `self.chef_data`
-        member_id = str(member.id)
-        self.chef_data[member_id] = count = self.chef_data.get(str(member_id), 0) + 1
+        member_id = member.id
+        self.chef_data[member_id] = count = self.chef_data.get(member_id, 0) + 1
         await ctx.respond(f"{member.mention} {message}\n被廚了 {count} 次")
 
     @ChefSlashCommandGroup.command()

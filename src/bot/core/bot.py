@@ -8,12 +8,11 @@ from discord import Bot, Intents
 
 
 class RPMTWBot(Bot):
-    def __init__(self):
+    def __init__(self, *, is_dev=True):
         self.online_time = datetime.now()
 
         with open("./data/constant.toml", "rb") as file:
             data = load(file)
-            is_dev: bool = data["is_dev"]
             self.config: dict = data["dev" if is_dev else "main"]
 
         intents = Intents.default()

@@ -13,6 +13,6 @@ if __name__ == "__main__":
     except IndexError:
         arg = None
 
-    bot = RPMTWBot() if arg == "--prod" else RPMTWBot(is_dev=False)
+    bot = RPMTWBot(is_dev=False) if arg == "--prod" else RPMTWBot()
     bot.load_extensions(*(f"extensions.{file}" for file in extension_list()))
     bot.run()

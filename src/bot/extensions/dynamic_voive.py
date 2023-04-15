@@ -18,7 +18,7 @@ class DynamicVoiceCog(InitedCog):
         super().__init__(bot)
 
         self.voice_mapping: dict[int, VoiceChannel] = {}
-        self.main_channel: VoiceChannel = self.bot.get_channel(self.config["channel_id"])  # type: ignore
+        self.main_channel: VoiceChannel = self.bot.get_channel(self.config["DynamicVoiceCog"]["channel_id"])  # type: ignore
 
     @InitedCog.listener()
     async def on_voice_state_update(

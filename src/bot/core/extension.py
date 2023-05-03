@@ -1,8 +1,10 @@
+from typing import TYPE_CHECKING
 from pathlib import Path
 
 from discord import Cog
 
-from packages import RPMTWBot
+if TYPE_CHECKING:
+    from packages import RPMTWBot
 
 extension_list = lambda: (i.stem for i in Path("./src/bot/extensions").glob("*.py"))
 

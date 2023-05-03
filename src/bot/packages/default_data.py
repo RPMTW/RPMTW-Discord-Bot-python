@@ -1,9 +1,16 @@
 import logging
 
-import discord
-from discord import ApplicationContext, Bot, commands
+from discord import ApplicationContext, commands
 
 logging.basicConfig(level=logging.INFO)
+logging.getLogger("RPMTWBot").setLevel(logging.INFO)
+
+
+__all__ = (
+    "ApplicationContext",
+    "commands",
+    "Config",
+)
 
 
 class Config:
@@ -22,13 +29,3 @@ class Config:
             data = data[_]
 
         return data
-
-
-__all__ = [
-    "logging",
-    "discord",
-    "ApplicationContext",
-    "Bot",
-    "commands",
-    "Config",
-]

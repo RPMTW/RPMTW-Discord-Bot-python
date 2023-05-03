@@ -7,7 +7,11 @@ __pycache__/
 #   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
 #   in version control.
 #   https://pdm.fming.dev/#use-with-ide
+#   https://github.com/pdm-project/pdm
 .pdm.toml
+.pdm-python
+__pypackages__
+
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/

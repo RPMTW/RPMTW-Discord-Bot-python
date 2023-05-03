@@ -1,9 +1,13 @@
 class IDNotFoundError(ValueError):
-    """Base exception that is raised when a bot.get_xxx(eg: bot.get_channel) method return None"""
+    """
+    Base exception that is raised when a bot.get_xxx(eg: bot.get_channel) method
+    return None
+    """
 
     def __init__(self, type_: str, id_: int) -> None:
         super().__init__(
-            f"Cannot find {type_} with id `{id_}`, maybe {type_} not exist or bot isn't ready?"
+            f"Cannot find {type_} with id `{id_}`, maybe {type_} not exist"
+            "or bot isn't ready?"
         )
 
 

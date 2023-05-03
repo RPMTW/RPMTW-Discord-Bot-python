@@ -1,11 +1,8 @@
-import logging
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from discord import Cog
 
-if TYPE_CHECKING:
-    from core.bot import RPMTWBot
+from packages import RPMTWBot
 
 extension_list = lambda: (i.stem for i in Path("./src/bot/extensions").glob("*.py"))
 
@@ -16,7 +13,9 @@ class InitedCog(Cog):
         self.bot = bot
         self.config: dict = bot.config.get(self._get_sub_class_name(), {})
         self._maybe_none = {}
-        logging.info(f"load extension - {self.__cog_name__}")
+        self.log = bot.log
+
+        self.log.info(f"load extension - {self.__cog_name__}")
 
     @classmethod
     def _get_sub_class_name(cls):

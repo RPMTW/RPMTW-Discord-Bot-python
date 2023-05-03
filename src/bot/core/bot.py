@@ -3,13 +3,18 @@ from datetime import datetime
 from os import environ
 from tomllib import load
 
-from core.universe_chat import RPMTWApiClient
 from discord import Bot, Intents
+
+from core.universe_chat import RPMTWApiClient
+
+
+log = logging.getLogger("RPMTWBot")
 
 
 class RPMTWBot(Bot):
     def __init__(self, *, is_dev=True):
         self.online_time = datetime.now()
+        self.log = log
 
         with open("./data/constant.toml", "rb") as file:
             data = load(file)
@@ -25,7 +30,7 @@ class RPMTWBot(Bot):
 
     async def on_ready(self):
         await self.rpmtw_api_client.connect(environ.get("CHAT_TOKEN"))
-        logging.info("bot is ready")
+        self.log.info("bot is ready")
 
     def run(self):
         super().run(self.token)

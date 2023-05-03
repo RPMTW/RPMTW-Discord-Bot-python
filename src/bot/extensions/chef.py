@@ -1,14 +1,10 @@
 from json import dump, load
 from pathlib import Path
-from typing import TYPE_CHECKING
 
-from bidict import bidict
 from discord import Embed, Member
 from discord.ext import tasks
-from packages.cog_data import *
 
-if TYPE_CHECKING:
-    from core.bot import RPMTWBot
+from packages import InitedCog, commands, RPMTWBot, ApplicationContext
 
 
 class ChefCog(InitedCog):

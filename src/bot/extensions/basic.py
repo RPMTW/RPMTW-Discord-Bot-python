@@ -1,13 +1,10 @@
 from datetime import datetime
 from os import getpid
-from typing import TYPE_CHECKING
 
 from discord import Color, Embed
-from packages.cog_data import *
 from psutil import Process, virtual_memory
 
-if TYPE_CHECKING:
-    from core.bot import RPMTWBot
+from packages import ApplicationContext, commands, InitedCog, RPMTWBot
 
 
 class BasicCog(InitedCog):
@@ -18,7 +15,10 @@ class BasicCog(InitedCog):
     @commands.slash_command()
     async def info(self, ctx: ApplicationContext):
         embed = Embed(color=Color.dark_gray())
-        embed.set_author(name=f"{self.bot.user}", icon_url=self.bot.user.avatar.url)  # type: ignore
+        embed.set_author(
+            name=f"{self.bot.user}",
+            icon_url=self.bot.user.avatar.url,
+        )
         for name, value, inline in (
             (
                 "正常運作時間",
@@ -27,7 +27,8 @@ class BasicCog(InitedCog):
             ),
             (
                 "記憶體用量（目前使用量/總記憶體大小）",
-                f"{round(Process(getpid()).memory_info().rss / 1024 ** 2, 2)} / {round(virtual_memory().total / 1024 ** 2, 2)} MiB",
+                f"{round(Process(getpid()).memory_info().rss / 1024 ** 2, 2)} / "
+                f"{round(virtual_memory().total / 1024 ** 2, 2)} MiB",
                 False,
             ),
             ("使用者快取", f"{self.bot.users.__len__()}", True),

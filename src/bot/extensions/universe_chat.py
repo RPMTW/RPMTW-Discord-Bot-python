@@ -1,10 +1,6 @@
-from typing import TYPE_CHECKING
-
 from discord import Message
-from packages.cog_data import *
 
-if TYPE_CHECKING:
-    from core.bot import RPMTWBot
+from packages import InitedCog, RPMTWBot
 
 
 class UniverseChat(InitedCog):
@@ -14,7 +10,8 @@ class UniverseChat(InitedCog):
 
     @InitedCog.listener()
     async def on_message(self, message: Message):
-        if message.channel.id != self.channel_id or message.author.bot:
+        author = message.author
+        if message.channel.id != self.channel_id or author.bot or author.system:
             return
 
         await self.bot.rpmtw_api_client.send_discord_message(message)

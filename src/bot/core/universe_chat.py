@@ -1,23 +1,19 @@
-import logging
 from asyncio import Queue
 from json import dumps, loads
 from re import compile
-from typing import TYPE_CHECKING
 
 from aiohttp import ClientSession
 from bidict import bidict
-from discord import DiscordException, TextChannel
+from discord import DiscordException, TextChannel, Message, Webhook, WebhookMessage
+from socketio import AsyncClient
+
 from exceptions import (
     ChannelNotFoundError,
     ChannelTypeError,
     GuildNotFoundError,
     HasNoWebhookError,
 )
-from socketio import AsyncClient
-
-if TYPE_CHECKING:
-    from core.bot import RPMTWBot
-    from discord import Message, Webhook, WebhookMessage
+from packages import RPMTWBot
 
 
 class RPMTWApiClient:
@@ -28,18 +24,19 @@ class RPMTWApiClient:
         self.received_data: Queue[dict] = Queue()
         self.id_uuid = bidict()
         self._maybe_none = {}
+        self.log = bot.log
 
         @self.sio.event
         def connect():
-            logging.info("Connected to Universe Chat server")
+            self.log.info("Connected to Universe Chat server")
 
         @self.sio.event
         def disconnect():
-            logging.info("Disconnected from Universe Chat server")
+            self.log.info("Disconnected from Universe Chat server")
 
         @self.sio.event
         def connect_error(data):
-            logging.error(f"Connection error: {data}")
+            self.log.error(f"Connection error: {data}")
 
         @self.sio.event
         async def sentMessage(data: list[int]):
@@ -56,10 +53,10 @@ class RPMTWApiClient:
                     avatar_url=decoded_data["avatarUrl"],
                     username=self._format_nickname(decoded_data),
                     wait=True,
-                )  # type: ignore
+                )
                 self.id_uuid[discord_message.id] = decoded_data["uuid"]
             except DiscordException as e:
-                logging.error(f"Send cosmic chat message to discord failed: {e}")
+                self.log.error(f"Send cosmic chat message to discord failed: {e}")
 
         self.api_base_url = config["api_base_url"]
         self.universe_chat_base_url = config["universe_chat_base_url"]
@@ -123,14 +120,23 @@ class RPMTWApiClient:
             discord_message_id := self.id_uuid.inverse.get(reply_message_data["uuid"])
         ):
             # Data not in memory, so treat it as in game message
-            return f"回覆 {self._format_nickname(reply_message_data)}: {reply_message_data['message']}\n> {content}"
+            return (
+                f"回覆 {self._format_nickname(reply_message_data)}:"
+                f" {reply_message_data['message']}\n> {content}"
+            )
 
         discord_message = await self.get_channel().fetch_message(discord_message_id)
 
         return (
-            f"回覆 {self._format_nickname(reply_message_data)}：{reply_message_data['message']}\n> {content}"
+            (
+                f"回覆 {self._format_nickname(reply_message_data)}："
+                f"{reply_message_data['message']}\n> {content}"
+            )
             if discord_message.webhook_id
-            else f"回覆 {discord_message.author.mention}：{discord_message.content}\n {content}"
+            else (
+                f"回覆 {discord_message.author.mention}：{discord_message.content}"
+                f"\n {content}"
+            )
         )
 
     @staticmethod
@@ -176,7 +182,7 @@ class RPMTWApiClient:
             "username": message.author.name,
             "userId": str(message.author.id),
             "avaterUrl": message.author.display_avatar.url,
-            "nickname": message.author.nick,  # type: ignore
+            "nickname": message.author.nick,
             "replyMessageUUID": reply_message_uuid if reply_message_uuid else None,
         }
 

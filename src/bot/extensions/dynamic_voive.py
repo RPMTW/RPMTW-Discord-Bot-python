@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING
-
 from discord import (
     CategoryChannel,
     Member,
@@ -7,11 +5,9 @@ from discord import (
     VoiceChannel,
     VoiceState,
 )
-from exceptions import ChannelNotFoundError, ChannelTypeError
-from packages.cog_data import *
 
-if TYPE_CHECKING:
-    from core.bot import RPMTWBot
+from exceptions import ChannelNotFoundError, ChannelTypeError
+from packages import InitedCog, RPMTWBot
 
 
 class DynamicVoiceCog(InitedCog):
@@ -19,7 +15,6 @@ class DynamicVoiceCog(InitedCog):
         super().__init__(bot)
 
         self.voice_mapping: dict[int, VoiceChannel] = {}
-        self.main_channel = None  # type: ignore
 
     def get_voice_channel(self) -> VoiceChannel:
         if _ := self._maybe_none.get("channel_id"):
@@ -36,7 +31,10 @@ class DynamicVoiceCog(InitedCog):
 
     @InitedCog.listener()
     async def on_voice_state_update(
-        self, member: Member, before: VoiceState, after: VoiceState
+        self,
+        member: Member,
+        before: VoiceState,
+        after: VoiceState,
     ):
         if member.bot:
             return
@@ -49,7 +47,7 @@ class DynamicVoiceCog(InitedCog):
         ):
             del self.voice_mapping[member.id]
             await channel.delete()
-            logging.info(f"{member} leave his/her exclusive channel(id={channel.id})")
+            self.log.info(f"{member} leave his/her exclusive channel(id={channel.id})")
 
         # join/move to main_channel
         if (channel := after.channel) and channel.id == self.get_voice_channel().id:
@@ -58,20 +56,20 @@ class DynamicVoiceCog(InitedCog):
                 member.guild.default_role: PermissionOverwrite(priority_speaker=True),
                 self.bot.user: PermissionOverwrite(priority_speaker=False),
             }
-            self.voice_mapping[
-                member.id
-            ] = exclusive_channel = await channel.category.create_voice_channel(  # type: ignore
+            exclusive_channel = await channel.category.create_voice_channel(
                 f"{member.name}的頻道", overwrites=overwrites
             )
+            self.voice_mapping[member.id] = exclusive_channel
             await member.move_to(exclusive_channel)
-            logging.info(
+            self.log.info(
                 f"{member} create his/her exclusive channel(id={exclusive_channel.id})"
             )
 
     @InitedCog.listener()
     async def on_ready(self):  # clear empty voice channel after restart
-        logging.info("Try to clear empty dynamic voice channel")
-        category: CategoryChannel = self.bot.get_channel(self.config["category_id"])  # type: ignore
+        self.log.info("Try to clear empty dynamic voice channel")
+
+        category: CategoryChannel = self.bot.get_channel(self.config["category_id"])
         if category:
             for sub_channel in category.voice_channels:
                 if (

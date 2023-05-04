@@ -10,8 +10,7 @@ class UniverseChat(InitedCog):
 
     @InitedCog.listener()
     async def on_message(self, message: Message):
-        author = message.author
-        if message.channel.id != self.channel_id or author.bot or author.system:
+        if message.channel.id != self.channel_id or message.author.bot:
             return
 
         await self.bot.rpmtw_api_client.send_discord_message(message)

@@ -110,32 +110,17 @@ class DynamicVoiceCog(InitedCog):
         if member.bot:
             return
 
-        # leave/move from exclusive channel
-        if (
-            (channel := self.voice_mapping.get(member.id))
-            and (_ := before.channel)
-            and channel.id == _.id
-        ):
-            del self.voice_mapping[member.id]
-            await channel.delete()
-            logging.info(f"{member} leave his/her exclusive channel(id={channel.id})")
+        if not (before_channel := before.channel):
+            assert (after_channel := after.channel)
+            return await self.on_voice_join(member, after_channel)
+        if not (after_channel := after.channel):
+            return await self.on_voice_leave(member, before_channel)
+        if before_channel.id != after_channel.id:
+            return await self.on_voice_move(member, before_channel, after_channel)
 
-        # join/move to main_channel
-        if (channel := after.channel) and channel.id == self.get_main_voice_channel().id:
-            overwrites = {
-                member: PermissionOverwrite(manage_roles=True, manage_channels=True),
-                member.guild.default_role: PermissionOverwrite(priority_speaker=True),
-                self.bot.user: PermissionOverwrite(priority_speaker=False),
-            }
-            self.voice_mapping[
-                member.id
-            ] = exclusive_channel = await channel.category.create_voice_channel(  # type: ignore
-                f"{member.name}的頻道", overwrites=overwrites
-            )
-            await member.move_to(exclusive_channel)
-            logging.info(
-                f"{member} create his/her exclusive channel(id={exclusive_channel.id})"
-            )
+        # other voice state update, such as deaf/undeaf/mute/unmute...
+        # current nothing so just return None
+        return None
 
     @InitedCog.listener()
     async def on_ready(self):  # clear empty voice channel after restart

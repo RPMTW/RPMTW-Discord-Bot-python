@@ -9,7 +9,9 @@
     "dotenv",
     "Euxcbsks",
     "pycord",
-    "RPMTW"
+    "RPMTW",
+    "undeaf",
+    "unmute"
   ],
   "editor.tabSize": 2,
   "editor.codeActionsOnSave": {

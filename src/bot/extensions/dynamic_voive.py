@@ -46,6 +46,9 @@ class DynamicVoiceCog(InitedCog):
                 self.bot.user: PermissionOverwrite(priority_speaker=False),
             },
         )
+        logging.info(
+            f"{member} create his/her exclusive channel(id={exclusive_channel.id})"
+        )
         self.voice_mapping[member.id] = exclusive_channel
 
         return exclusive_channel

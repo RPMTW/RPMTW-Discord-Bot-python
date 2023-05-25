@@ -34,6 +34,22 @@ class DynamicVoiceCog(InitedCog):
         self._maybe_none["channel_id"] = _
         return _
 
+    async def create_exclusive_voice_channel(self, member: Member):
+        if not (category := self.get_main_voice_channel().category):
+            raise ValueError("main voice channel must in a category")
+
+        exclusive_channel = await category.create_voice_channel(
+            f"{member.name}的頻道",
+            overwrites={
+                member: PermissionOverwrite(manage_roles=True, manage_channels=True),
+                member.guild.default_role: PermissionOverwrite(priority_speaker=True),
+                self.bot.user: PermissionOverwrite(priority_speaker=False),
+            },
+        )
+        self.voice_mapping[member.id] = exclusive_channel
+
+        return exclusive_channel
+
     @InitedCog.listener()
     async def on_voice_state_update(
         self, member: Member, before: VoiceState, after: VoiceState

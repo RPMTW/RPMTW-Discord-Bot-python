@@ -72,6 +72,15 @@ class DynamicVoiceCog(InitedCog):
 
         return exclusive_channel
 
+    async def delete_exclusive_voice_channel(
+        self, member: Member, channel: "VoiceChannel | StageChannel"
+    ):
+        del self.voice_mapping[member.id]
+        await channel.delete()
+        logging.info(
+            f"Delete exclusive channel(id={channel.id}) for {member}(id={member.id})"
+        )
+
     @InitedCog.listener()
     async def on_voice_state_update(
         self, member: Member, before: VoiceState, after: VoiceState

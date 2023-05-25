@@ -29,6 +29,30 @@ class DynamicVoiceCog(InitedCog):
         self._maybe_none["channel_id"] = _
         return _
 
+    def is_join_main(self, channel: "VoiceChannel | StageChannel"):
+        """Is join main voice channel?
+
+        ## Returns
+        - True
+            - When `channel` is the main voice channel
+        - False
+            - When `channel` is not the main voice channel
+        """
+        return channel.id == self.get_main_voice_channel().id
+
+    def is_owner_leave(self, member: Member, channel: "VoiceChannel | StageChannel"):
+        """Is owner leave from their exclusive voice channel?
+
+        ## Returns
+        - True
+            - When `member` is the owner of `channel`
+        - False
+            - When `member` is not the owner of `channel`
+        """
+        if not (_ := self.voice_mapping.get(member.id)):
+            return False
+        return _.id == channel.id
+
     async def create_exclusive_voice_channel(self, member: Member):
         if not (category := self.get_main_voice_channel().category):
             raise ValueError("main voice channel must in a category")

@@ -42,7 +42,7 @@ class DynamicVoiceCog(InitedCog):
             },
         )
         logging.info(
-            f"{member} create his/her exclusive channel(id={exclusive_channel.id})"
+            f"Create exclusive channel(id={exclusive_channel.id}) for {member}(id={member.id})"
         )
         self.voice_mapping[member.id] = exclusive_channel
 

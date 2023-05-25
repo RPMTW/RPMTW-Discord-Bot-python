@@ -124,14 +124,11 @@ class DynamicVoiceCog(InitedCog):
 
     @InitedCog.listener()
     async def on_ready(self):  # clear empty voice channel after restart
-        logging.info("Try to clear empty dynamic voice channel")
+        logging.info("Try to clear dynamic voice channel")
         category: CategoryChannel = self.bot.get_channel(self.config["category_id"])  # type: ignore
         if category:
             for sub_channel in category.voice_channels:
-                if (
-                    sub_channel.id != self.config["channel_id"]
-                    and not sub_channel.members
-                ):
+                if sub_channel.id != self.config["channel_id"]:
                     await sub_channel.delete()
 
 

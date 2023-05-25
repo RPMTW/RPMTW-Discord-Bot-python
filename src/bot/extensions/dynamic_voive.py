@@ -1,24 +1,19 @@
 from typing import TYPE_CHECKING
 
-from discord import (
-    CategoryChannel,
-    Member,
-    PermissionOverwrite,
-    VoiceChannel,
-    VoiceState,
-)
+from discord import Member, PermissionOverwrite, VoiceChannel, VoiceState
 from exceptions import ChannelNotFoundError, ChannelTypeError
 from packages.cog_data import *
 
 if TYPE_CHECKING:
     from core.bot import RPMTWBot
+    from discord import CategoryChannel, StageChannel
 
 
 class DynamicVoiceCog(InitedCog):
     def __init__(self, bot: "RPMTWBot") -> None:
         super().__init__(bot)
 
-        self.voice_mapping: dict[int, VoiceChannel] = {}
+        self.voice_mapping: "dict[int, VoiceChannel | StageChannel]" = {}
         self.main_channel = None  # type: ignore
 
     def get_main_voice_channel(self) -> VoiceChannel:

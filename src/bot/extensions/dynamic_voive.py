@@ -21,7 +21,7 @@ class DynamicVoiceCog(InitedCog):
         self.voice_mapping: dict[int, VoiceChannel] = {}
         self.main_channel = None  # type: ignore
 
-    def get_voice_channel(self) -> VoiceChannel:
+    def get_main_voice_channel(self) -> VoiceChannel:
         if _ := self._maybe_none.get("channel_id"):
             return _
 
@@ -52,7 +52,7 @@ class DynamicVoiceCog(InitedCog):
             logging.info(f"{member} leave his/her exclusive channel(id={channel.id})")
 
         # join/move to main_channel
-        if (channel := after.channel) and channel.id == self.get_voice_channel().id:
+        if (channel := after.channel) and channel.id == self.get_main_voice_channel().id:
             overwrites = {
                 member: PermissionOverwrite(manage_roles=True, manage_channels=True),
                 member.guild.default_role: PermissionOverwrite(priority_speaker=True),

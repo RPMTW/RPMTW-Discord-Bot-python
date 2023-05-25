@@ -81,6 +81,28 @@ class DynamicVoiceCog(InitedCog):
             f"Delete exclusive channel(id={channel.id}) for {member}(id={member.id})"
         )
 
+    async def on_voice_join(self, member: Member, channel: "VoiceChannel | StageChannel"):
+        if self.is_join_main(channel):
+            exclusive_channel = await self.create_exclusive_voice_channel(member)
+            await member.move_to(exclusive_channel)
+
+    async def on_voice_move(
+        self,
+        member: Member,
+        before: "VoiceChannel | StageChannel",
+        after: "VoiceChannel | StageChannel",
+    ):
+        if self.is_owner_leave(member, before) and self.is_join_main(after):
+            await self.delete_exclusive_voice_channel(member, before)
+            exclusive_channel = await self.create_exclusive_voice_channel(member)
+            await member.move_to(exclusive_channel)
+
+    async def on_voice_leave(
+        self, member: Member, channel: "VoiceChannel | StageChannel"
+    ):
+        if self.is_owner_leave(member, channel):
+            await self.delete_exclusive_voice_channel(member, channel)
+
     @InitedCog.listener()
     async def on_voice_state_update(
         self, member: Member, before: VoiceState, after: VoiceState

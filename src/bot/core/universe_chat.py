@@ -1,12 +1,13 @@
-import logging
-from asyncio import Queue
+from asyncio import Future, get_event_loop
+from dataclasses import asdict, dataclass
 from json import dumps, loads
+from logging import getLogger
 from re import compile
 from typing import TYPE_CHECKING
 
 from aiohttp import ClientSession
 from bidict import bidict
-from discord import DiscordException, TextChannel
+from discord import DiscordException, Member, Message, TextChannel
 from exceptions import (
     ChannelNotFoundError,
     ChannelTypeError,
@@ -17,200 +18,191 @@ from socketio import AsyncClient
 
 if TYPE_CHECKING:
     from core.bot import RPMTWBot
-    from discord import Message, Webhook, WebhookMessage
+
+_EMOJI_TO_DISCORD = compile(r":([a-zA-Z0-9_]+):")
+_EMOJI_TO_MINECRAFT = compile(r"<:([a-zA-Z0-9_]+):([0-9]+)>")
+_EMOJI_DATA: dict[str, int] = {}
+_ID_UUID: bidict[int, str] = bidict()
+_LOGGER = getLogger(__name__)
 
 
-class RPMTWApiClient:
-    def __init__(self, bot: "RPMTWBot", config: dict) -> None:
-        self.bot = bot
-        self.config = config
-        self.sio = AsyncClient()
-        self.received_data: Queue[dict] = Queue()
-        self.id_uuid = bidict()
-        self._maybe_none = {}
+@dataclass
+class ReceivedMessage:
+    uuid: str
+    username: str
+    userIdentifier: str
+    message: str
+    nickname: str
+    avatarUrl: str
+    sentAt: str
+    userType: str
+    replyMessageUUID: str
 
-        @self.sio.event
-        def connect():
-            logging.info("Connected to Universe Chat server")
+    def is_from_discord(self):
+        return self.userType == "discord"
 
-        @self.sio.event
-        def disconnect():
-            logging.info("Disconnected from Universe Chat server")
-
-        @self.sio.event
-        def connect_error(data):
-            logging.error(f"Connection error: {data}")
-
-        @self.sio.event
-        async def sentMessage(data: list[int]):
-            decoded_data = self.decode_data(data)
-
-            if decoded_data["userType"] == "discord":
-                return
-
-            webhook = await self.get_webhook()
-
-            try:
-                discord_message: WebhookMessage = await webhook.send(
-                    await self.get_content(decoded_data),
-                    avatar_url=decoded_data["avatarUrl"],
-                    username=self._format_nickname(decoded_data),
-                    wait=True,
-                )  # type: ignore
-                self.id_uuid[discord_message.id] = decoded_data["uuid"]
-            except DiscordException as e:
-                logging.error(f"Send cosmic chat message to discord failed: {e}")
-
-        self.api_base_url = config["api_base_url"]
-        self.universe_chat_base_url = config["universe_chat_base_url"]
-
-    def get_channel(self) -> TextChannel:
-        if channel := self._maybe_none.get("channel"):
-            return channel
-
-        if not (channel := self.bot.get_channel(self.config["channel_id"])):
-            raise ChannelNotFoundError(self.config["channel_id"])
-
-        if not isinstance(channel, TextChannel):
-            raise ChannelTypeError(self.config["channel_id"], "TextChannel")
-
-        self._maybe_none["channel"] = channel
-        return channel
-
-    async def get_webhook(self) -> "Webhook":
-        if webhook := self._maybe_none.get("webhook"):
-            return webhook
-
-        webhooks = await self.get_channel().webhooks()
-
-        try:
-            webhook = webhooks[0]
-        except IndexError as e:
-            raise HasNoWebhookError(self.config["channel_id"]) from e
-
-        self._maybe_none["webhook"] = webhook
-        return webhook
-
-    def get_emoji_data(self) -> dict[str, str]:
-        if emoji_data := self._maybe_none["emoji_data"]:
-            return emoji_data
-
-        if not (guild := self.bot.get_guild(self.config["guild_id"])):
-            raise GuildNotFoundError(self.config["guild_id"])
-
-        self._maybe_none["emoji_data"] = emoji_data = {
-            emoji.name: str(emoji.id) for emoji in guild.emojis
-        }
-        return emoji_data
-
-    async def get_message_data_by_uuid(self, uuid) -> dict:
-        link = f"{self.api_base_url}/universe-chat/view/{uuid}"
+    async def get_reply(self, api_base_url: str):
+        if not (reply_uuid := self.replyMessageUUID):
+            return None
+        link = f"{api_base_url}/universe-chat/view/{reply_uuid}"
 
         async with ClientSession() as session:
             async with session.get(link) as response:
-                response_data = await response.json()
-                return response_data["data"]
+                response_data: dict = await response.json()
+                return self.__class__(**response_data["data"])
 
-    async def get_content(self, decoded_data: dict):
-        content: str = decoded_data["message"]
+    def get_name(self):
+        if nickname := self.nickname:
+            return f"{self.username} ({nickname})"
+        return self.username
 
-        if not (reply_uuid := decoded_data["replyMessageUUID"]):
-            return content
-
-        reply_message_data = await self.get_message_data_by_uuid(reply_uuid)
-
-        if not (
-            discord_message_id := self.id_uuid.inverse.get(reply_message_data["uuid"])
-        ):
-            # Data not in memory, so treat it as in game message
-            return f"回覆 {self._format_nickname(reply_message_data)}: {reply_message_data['message']}\n> {content}"
-
-        discord_message = await self.get_channel().fetch_message(discord_message_id)
-
-        return (
-            f"回覆 {self._format_nickname(reply_message_data)}：{reply_message_data['message']}\n> {content}"
-            if discord_message.webhook_id
-            else f"回覆 {discord_message.author.mention}：{discord_message.content}\n {content}"
+    @classmethod
+    def from_raw(cls, raw_data: list[int]):
+        data = loads(
+            "".join(chr(_) for _ in raw_data).encode("raw_unicode_escape").decode()
         )
+        return cls(**data)
 
-    @staticmethod
-    def decode_data(data: list[int]) -> dict:
-        return loads(
-            "".join(chr(_) for _ in data).encode("raw_unicode_escape").decode()
-        )
 
-    @staticmethod
-    def encode_data(data: dict):
+@dataclass
+class DiscordMessage:
+    message: str
+    username: str
+    userId: str
+    avatarUrl: str | None = None
+    nickname: str | None = None
+    replyMessageUUID: str | None = None
+
+    def encode(self):
         return [
             ord(_)
-            for _ in dumps(data, separators=(",", ":"), ensure_ascii=False)
+            for _ in dumps(asdict(self), separators=(",", ":"), ensure_ascii=False)
             .encode()
             .decode("raw_unicode_escape")
         ]
 
+    @classmethod
+    def from_message(cls, message: Message):
+        content = _format_emoji_to_minecraft(message.content)
+
+        if attachments := message.attachments:
+            content += "".join(f"\n{attachment.url}" for attachment in attachments)
+
+        reply = _.resolved if (_ := message.reference) else None
+        author: Member = message.author  # type: ignore
+        return cls(
+            content,
+            author.name,
+            str(author.id),
+            author.display_avatar.url,
+            author.nick,
+            _ID_UUID.get(reply.id) if reply else None,
+        )
+
+
+def _format_emoji_to_minecraft(message: str):
+    for _ in _EMOJI_TO_MINECRAFT.finditer(message):
+        message = message.replace(_.group(0), f":{_.group(1)}:")
+
+    return message
+
+
+def _format_emoji_to_discord(message: str):
+    for _ in _EMOJI_TO_DISCORD.finditer(message):
+        message = message.replace(
+            _.group(0), f"<:{_.group(1)}:{_EMOJI_DATA[_.group(1)]}>"
+        )
+
+    return message
+
+
+class RPMTWApiClient:
+    def __init__(self, bot: "RPMTWBot", config: dict):
+        self._bot = bot
+        self._config = config
+        self._sio = AsyncClient(binary=True)
+        self._loop = get_event_loop()
+        self._api_base_url: str = config["api_base_url"]
+
+        self._sio.on("connect", self._handle_connect)
+        self._sio.on("disconnect", self._handle_disconnect)
+        self._sio.on("connect_error", self._handle_connect_error)
+        self._sio.on("sentMessage", self._handle_sentMessage)
+        self._loop.create_task(self.init())
+
+    async def init(self):
+        await self._bot.wait_until_ready()
+
+        if not (channel := self._bot.get_channel(self._config["channel_id"])):
+            raise ChannelNotFoundError(self._config["channel_id"])
+        if not isinstance(channel, TextChannel):
+            raise ChannelTypeError(self._config["channel_id"], "TextChannel")
+
+        webhooks = await channel.webhooks()
+
+        try:
+            webhook = webhooks[0]
+        except IndexError as e:
+            raise HasNoWebhookError(self._config["channel_id"]) from e
+
+        if not (guild := self._bot.get_guild(self._config["guild_id"])):
+            raise GuildNotFoundError(self._config["guild_id"])
+
+        self._channel = channel
+        self._webhook = webhook
+        _EMOJI_DATA.update({emoji.name: emoji.id for emoji in guild.emojis})
+
     async def connect(self, token: str | None = None):
-        await self.sio.connect(
-            self.universe_chat_base_url,
+        await self._sio.connect(
+            self._config["universe_chat_base_url"],
             transports="websocket",
             headers={"rpmtw_auth_token": token} if token else {},
         )
 
     async def disconnect(self):
-        await self.sio.disconnect()
+        await self._sio.disconnect()
 
-    async def send_discord_message(self, message: "Message"):
-        content = message.content
-
-        # Turn attachment(s) to url then append to content
-        if attachments := message.attachments:
-            content += "".join(f"\n{attachment.url}" for attachment in attachments)
-
-        reply_message_uuid = (
-            self.id_uuid.get(reply_message.id)
-            if (reference := message.reference)
-            and (reply_message := reference.resolved)
-            else None
-        )
-        data = {
-            "message": content,
-            "username": message.author.name,
-            "userId": str(message.author.id),
-            "avatarUrl": message.author.display_avatar.url,
-            "nickname": message.author.nick,  # type: ignore
-            "replyMessageUUID": reply_message_uuid if reply_message_uuid else None,
-        }
-
-        def callback(uuid: str):
-            self.id_uuid[message.id] = uuid
-
-        await self.sio.emit(
+    async def send_discord_message(self, message: Message):
+        """Send a discord message to Universe Chat"""
+        future: Future[str] = self._loop.create_future()
+        await self._sio.emit(
             "discordMessage",
-            self.encode_data(data),
-            callback=callback,
+            DiscordMessage.from_message(message).encode(),
+            callback=lambda uuid: future.set_result(uuid),
         )
+        _ID_UUID[message.id] = await future
 
-    @staticmethod
-    def _format_nickname(data: dict) -> str:
-        return (
-            f"{data['username']} ({nickname})"
-            if (nickname := data["nickname"])
-            else data["username"]
-        )
+    async def _handle_sentMessage(self, raw_data: list[int]):
+        if (message := ReceivedMessage.from_raw(raw_data)).is_from_discord():
+            return
 
-    def _format_emoji_to_discord(self, message: str):
-        pattern = compile(r":([a-zA-Z0-9_]+):")
-
-        for _ in pattern.finditer(message):
-            message = message.replace(
-                _.group(0), f"<:{_.group(1)}:{self.get_emoji_data()[_.group(1)]}>"
+        try:
+            webhook_message = await self._webhook.send(
+                await self._get_content(message),
+                avatar_url=message.avatarUrl,
+                username=message.get_name(),
+                wait=True,
             )
+        except DiscordException as e:
+            _LOGGER.error(f"Send cosmic chat message to discord failed: {e}")
+        else:
+            _ID_UUID[webhook_message.id] = message.uuid
 
-        return message
+    def _handle_connect(self):
+        _LOGGER.info("Connected to Universe Chat server")
 
-    def _format_emoji_to_minecraft(self, message: str):
-        pattern = compile(r"<:([a-zA-Z0-9_]+):([0-9]+)>")
+    def _handle_disconnect(self):
+        _LOGGER.info("Disconnected from Universe Chat server")
 
-        for _ in pattern.finditer(message):
-            message = message.replace(_.group(0), f":{_.group(1)}:")
+    def _handle_connect_error(self, data):
+        _LOGGER.error(f"Connection error: {data}")
 
-        return message
+    async def _get_content(self, message: ReceivedMessage):
+        content = _format_emoji_to_discord(message.message)
+
+        if not (reply := await message.get_reply(self._api_base_url)):
+            return content
+        if reply.is_from_discord() and (reply_id := _ID_UUID.inverse.get(reply.uuid)):
+            discord_message = await self._channel.fetch_message(reply_id)
+            return f"回覆 {discord_message.author.mention}：{discord_message.content}\n-> {content}"
+        return f"回覆 {reply.get_name()}：{reply.message}\n-> {content}"

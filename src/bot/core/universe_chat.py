@@ -203,7 +203,15 @@ class RPMTWApiClient:
 
         if not (reply := await message.get_reply(self._api_base_url)):
             return content
-        if reply.is_from_discord() and (reply_id := _ID_UUID.inverse.get(reply.uuid)):
-            discord_message = await self._channel.fetch_message(reply_id)
-            return f"回覆 {discord_message.author.mention}：{discord_message.content}\n-> {content}"
-        return f"回覆 {reply.get_name()}：{reply.message}\n-> {content}"
+
+        content = f"：{reply.message}\n-> {content}"
+
+        if not (reply_id := _ID_UUID.inverse.get(reply.uuid)):
+            return f"回覆 {reply.get_name()}{content}"
+
+        discord_message = await self._channel.fetch_message(reply_id)
+        content = f"（<{discord_message.jump_url}>）{content}"
+
+        if reply.is_from_discord():
+            return f"回覆 {discord_message.author.mention}{content}"
+        return f"回覆 {reply.get_name()}{content}"

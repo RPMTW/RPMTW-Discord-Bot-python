@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from discord import Member, PermissionOverwrite, VoiceChannel, VoiceState
 from exceptions import ChannelNotFoundError, ChannelTypeError
 from packages.cog_data import *
+from packages.default_data import bot_logger
 
 if TYPE_CHECKING:
     from core.bot import RPMTWBot
@@ -65,7 +66,7 @@ class DynamicVoiceCog(InitedCog):
                 self.bot.user: PermissionOverwrite(priority_speaker=False),
             },
         )
-        logging.info(
+        bot_logger.info(
             f"Create exclusive channel(id={exclusive_channel.id}) for {member}(id={member.id})"
         )
         self.voice_mapping[member.id] = exclusive_channel
@@ -77,7 +78,7 @@ class DynamicVoiceCog(InitedCog):
     ):
         del self.voice_mapping[member.id]
         await channel.delete()
-        logging.info(
+        bot_logger.info(
             f"Delete exclusive channel(id={channel.id}) for {member}(id={member.id})"
         )
 
@@ -124,7 +125,7 @@ class DynamicVoiceCog(InitedCog):
 
     @InitedCog.listener()
     async def on_ready(self):  # clear empty voice channel after restart
-        logging.info("Try to clear dynamic voice channel")
+        bot_logger.info("Try to clear dynamic voice channel")
         category: CategoryChannel = self.bot.get_channel(self.config["category_id"])  # type: ignore
         if category:
             for sub_channel in category.voice_channels:

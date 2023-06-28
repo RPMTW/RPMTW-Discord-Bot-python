@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from discord import Color, Embed, Message, TextChannel
 from exceptions import ChannelNotFoundError, ChannelTypeError
 from packages.cog_data import *
+from packages.default_data import bot_logger
 
 if TYPE_CHECKING:
     from core.bot import RPMTWBot
@@ -53,7 +54,7 @@ class LoggerCog(InitedCog):
     async def on_message_delete(self, msg: Message):
         channel = self.get_log_channel()
         await channel.send(embed=self.embed_gen("delete", msg))
-        logging.info(f"{msg.author} delete message:\n" f"\t{msg.content}")
+        bot_logger.info(f"{msg.author} delete message:\n" f"\t{msg.content}")
 
     @InitedCog.listener()
     async def on_message_edit(self, before_msg: Message, after_msg: Message):
@@ -64,7 +65,7 @@ class LoggerCog(InitedCog):
 
         channel = self.get_log_channel()
         await channel.send(embed=self.embed_gen("edit", before_msg, after_msg))
-        logging.info(
+        bot_logger.info(
             f"{before_msg.author}'s message have edited\n"
             "origin message:\n"
             f"\t{before_msg.content}\n"
@@ -74,7 +75,7 @@ class LoggerCog(InitedCog):
 
     @InitedCog.listener()
     async def on_application_command(self, ctx: ApplicationContext):
-        logging.info(f"{ctx.author} used {ctx.command.name}")
+        bot_logger.info(f"{ctx.author} used {ctx.command.name}")
 
 
 def setup(bot: "RPMTWBot"):

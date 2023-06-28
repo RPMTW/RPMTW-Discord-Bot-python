@@ -1,10 +1,10 @@
-import logging
 from datetime import datetime
 from os import environ
 from tomllib import load
 
 from core.universe_chat import RPMTWApiClient
 from discord import Bot, Intents
+from packages.default_data import bot_logger
 
 
 class RPMTWBot(Bot):
@@ -25,7 +25,7 @@ class RPMTWBot(Bot):
 
     async def on_ready(self):
         await self.rpmtw_api_client.connect(environ.get("CHAT_TOKEN"))
-        logging.info("bot is ready")
+        bot_logger.info("bot is ready")
 
     def run(self):
         super().run(self.token)

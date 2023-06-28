@@ -1,9 +1,10 @@
-import logging
+from logging import INFO, getLogger
 
 import discord
 from discord import ApplicationContext, Bot, commands
 
-logging.basicConfig(level=logging.INFO)
+bot_logger = getLogger("Bot Logger")
+bot_logger.setLevel(INFO)
 
 
 class Config:
@@ -25,7 +26,6 @@ class Config:
 
 
 __all__ = [
-    "logging",
     "discord",
     "ApplicationContext",
     "Bot",

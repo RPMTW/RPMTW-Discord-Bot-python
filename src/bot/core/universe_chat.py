@@ -54,8 +54,8 @@ class ReceivedMessage:
 
     def get_name(self):
         if nickname := self.nickname:
-            return f"{self.username} ({nickname})"
-        return self.username
+            return f"{self.username} ({nickname})".replace("_", "\\_")
+        return self.username.replace("_", "\\_")
 
     @classmethod
     def from_raw(cls, raw_data: list[int]):

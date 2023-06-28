@@ -1,7 +1,7 @@
 from asyncio import Future, get_event_loop
 from dataclasses import asdict, dataclass
 from json import dumps, loads
-from logging import getLogger
+from logging import INFO, getLogger
 from re import compile
 from typing import TYPE_CHECKING
 
@@ -24,6 +24,7 @@ _EMOJI_TO_MINECRAFT = compile(r"<:([a-zA-Z0-9_]+):([0-9]+)>")
 _EMOJI_DATA: dict[str, int] = {}
 _ID_UUID: bidict[int, str] = bidict()
 _LOGGER = getLogger(__name__)
+_LOGGER.setLevel(INFO)
 
 
 @dataclass

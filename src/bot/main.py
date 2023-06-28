@@ -1,3 +1,4 @@
+from logging import basicConfig
 from sys import argv
 
 import dotenv
@@ -13,6 +14,11 @@ if __name__ == "__main__":
     except IndexError:
         arg = None
 
-    bot = RPMTWBot(is_dev=False) if arg == "--prod" else RPMTWBot()
+    if arg != "--prod":
+        basicConfig(level="INFO")
+        bot = RPMTWBot(is_dev=True)
+    else:
+        bot = RPMTWBot()
+
     bot.load_extensions(*(f"extensions.{file}" for file in extension_list()))
     bot.run()

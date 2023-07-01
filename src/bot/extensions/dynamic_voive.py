@@ -11,54 +11,21 @@ if TYPE_CHECKING:
 
 
 class DynamicVoiceCog(InitedCog):
-    def __init__(self, bot: "RPMTWBot") -> None:
-        super().__init__(bot)
-
-        self.voice_mapping: "dict[int, VoiceChannel | StageChannel]" = {}
-        self.main_channel = None  # type: ignore
-
-    def get_main_voice_channel(self) -> VoiceChannel:
-        if _ := self._maybe_none.get("channel_id"):
-            return _
+    async def __cog_load__(self):
+        await self.bot.wait_until_ready()
 
         if not (_ := self.bot.get_channel(channel_id := self.config["channel_id"])):
             raise ChannelNotFoundError(channel_id)
-
         if not isinstance(_, VoiceChannel):
             raise ChannelTypeError(channel_id, "VoiceChannel")
-
-        self._maybe_none["channel_id"] = _
-        return _
-
-    def is_join_main(self, channel: "VoiceChannel | StageChannel"):
-        """Is join main voice channel?
-
-        ## Returns
-        - True
-            - When `channel` is the main voice channel
-        - False
-            - When `channel` is not the main voice channel
-        """
-        return channel.id == self.get_main_voice_channel().id
-
-    def is_owner_leave(self, member: Member, channel: "VoiceChannel | StageChannel"):
-        """Is owner leave from their exclusive voice channel?
-
-        ## Returns
-        - True
-            - When `member` is the owner of `channel`
-        - False
-            - When `member` is not the owner of `channel`
-        """
-        if not (_ := self.voice_mapping.get(member.id)):
-            return False
-        return _.id == channel.id
-
-    async def create_exclusive_voice_channel(self, member: Member):
-        if not (category := self.get_main_voice_channel().category):
+        if not (category := self.main_channel.category):
             raise ValueError("main voice channel must in a category")
 
-        exclusive_channel = await category.create_voice_channel(
+        self.main_channel = _
+        self.category = category
+
+    async def create_exclusive_voice_channel(self, member: Member):
+        exclusive_channel = await self.category.create_voice_channel(
             f"{member.name}的頻道",
             overwrites={
                 member: PermissionOverwrite(manage_roles=True, manage_channels=True),
@@ -69,23 +36,31 @@ class DynamicVoiceCog(InitedCog):
         bot_logger.info(
             f"Create exclusive channel(id={exclusive_channel.id}) for {member}(id={member.id})"
         )
-        self.voice_mapping[member.id] = exclusive_channel
-
         return exclusive_channel
 
     async def delete_exclusive_voice_channel(
         self, member: Member, channel: "VoiceChannel | StageChannel"
     ):
-        del self.voice_mapping[member.id]
         await channel.delete()
         bot_logger.info(
             f"Delete exclusive channel(id={channel.id}) for {member}(id={member.id})"
         )
 
     async def on_voice_join(self, member: Member, channel: "VoiceChannel | StageChannel"):
-        if self.is_join_main(channel):
+        if channel == self.main_channel:
             exclusive_channel = await self.create_exclusive_voice_channel(member)
             await member.move_to(exclusive_channel)
+
+    async def on_voice_leave(
+        self, member: Member, channel: "VoiceChannel | StageChannel"
+    ):
+        # bot offline -> member join main_channel -> bot online -> member leave main_channel
+        # maybe won't fix
+        if channel == self.main_channel:
+            return
+
+        if not channel.members:
+            await self.delete_exclusive_voice_channel(member, channel)
 
     async def on_voice_move(
         self,
@@ -93,16 +68,8 @@ class DynamicVoiceCog(InitedCog):
         before: "VoiceChannel | StageChannel",
         after: "VoiceChannel | StageChannel",
     ):
-        if self.is_owner_leave(member, before) and self.is_join_main(after):
-            await self.delete_exclusive_voice_channel(member, before)
-            exclusive_channel = await self.create_exclusive_voice_channel(member)
-            await member.move_to(exclusive_channel)
-
-    async def on_voice_leave(
-        self, member: Member, channel: "VoiceChannel | StageChannel"
-    ):
-        if self.is_owner_leave(member, channel):
-            await self.delete_exclusive_voice_channel(member, channel)
+        await self.on_voice_leave(member, before)
+        await self.on_voice_join(member, after)
 
     @InitedCog.listener()
     async def on_voice_state_update(
@@ -120,7 +87,7 @@ class DynamicVoiceCog(InitedCog):
             return await self.on_voice_move(member, before_channel, after_channel)
 
         # other voice state update, such as deaf/undeaf/mute/unmute...
-        # current nothing so just return None
+        # current nothing to do here so just return None
         return None
 
     @InitedCog.listener()

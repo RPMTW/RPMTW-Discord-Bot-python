@@ -1,10 +1,14 @@
 from datetime import datetime
 from os import environ
 from tomllib import load
+from typing import TYPE_CHECKING
 
 from core.universe_chat import RPMTWApiClient
 from discord import Bot, Intents
 from packages.default_data import bot_logger
+
+if TYPE_CHECKING:
+    from core.extension import InitedCog
 
 
 class RPMTWBot(Bot):
@@ -22,6 +26,11 @@ class RPMTWBot(Bot):
 
         self.rpmtw_api_client = RPMTWApiClient(self, self.config["UniverseChat"])
         self.token = environ["TEST_BOT_TOKEN" if is_dev else "BOT_TOKEN"]
+
+    def add_cog(self, cog: "InitedCog", *, override: bool = False) -> None:
+        if not hasattr(cog.cog_load, "__cog_special_method__"):
+            self.loop.create_task(cog.cog_load())
+        return super().add_cog(cog, override=override)
 
     async def on_ready(self):
         await self.rpmtw_api_client.connect(environ.get("CHAT_TOKEN"))

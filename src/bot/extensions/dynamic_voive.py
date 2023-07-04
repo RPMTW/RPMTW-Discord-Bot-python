@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class DynamicVoiceCog(InitedCog):
-    async def __cog_load__(self):
+    async def cog_load(self):
         await self.bot.wait_until_ready()
 
         if not (_ := self.bot.get_channel(channel_id := self.config["channel_id"])):

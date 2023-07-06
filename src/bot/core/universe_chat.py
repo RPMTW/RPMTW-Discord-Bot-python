@@ -210,7 +210,7 @@ class RPMTWApiClient:
             return f"回覆 {reply.get_name()}{content}"
 
         discord_message = await self._channel.fetch_message(reply_id)
-        content = f"（<{discord_message.jump_url}>）{content}"
+        content = f"（ {discord_message.jump_url} ）{content}"
 
         if reply.is_from_discord():
             return f"回覆 {discord_message.author.mention}{content}"

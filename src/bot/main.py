@@ -16,9 +16,9 @@ if __name__ == "__main__":
 
     if arg != "--prod":
         basicConfig(level="INFO")
-        bot = RPMTWBot(is_dev=True)
-    else:
         bot = RPMTWBot()
+    else:
+        bot = RPMTWBot(is_dev=False)
 
     bot.load_extensions(*(f"extensions.{file}" for file in extension_list()))
     bot.run()

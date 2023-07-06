@@ -7,7 +7,7 @@ from packages.default_data import bot_logger
 
 if TYPE_CHECKING:
     from core.bot import RPMTWBot
-    from discord import CategoryChannel, StageChannel
+    from discord import StageChannel
 
 
 class DynamicVoiceCog(InitedCog):
@@ -23,6 +23,14 @@ class DynamicVoiceCog(InitedCog):
 
         self.main_channel = _
         self.category = category
+
+        bot_logger.info("Delete empty dynamic voice channel")
+
+        for sub_channel in self.category.voice_channels:
+            if sub_channel == self.main_channel:
+                continue
+            if not sub_channel.members:
+                await sub_channel.delete()
 
     async def create_exclusive_voice_channel(self, member: Member):
         exclusive_channel = await self.category.create_voice_channel(
@@ -89,15 +97,6 @@ class DynamicVoiceCog(InitedCog):
         # other voice state update, such as deaf/undeaf/mute/unmute...
         # current nothing to do here so just return None
         return None
-
-    @InitedCog.listener()
-    async def on_ready(self):  # clear empty voice channel after restart
-        bot_logger.info("Try to clear dynamic voice channel")
-        category: CategoryChannel = self.bot.get_channel(self.config["category_id"])  # type: ignore
-        if category:
-            for sub_channel in category.voice_channels:
-                if sub_channel.id != self.config["channel_id"]:
-                    await sub_channel.delete()
 
 
 def setup(bot: "RPMTWBot"):

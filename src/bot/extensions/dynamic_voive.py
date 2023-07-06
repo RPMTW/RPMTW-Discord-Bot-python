@@ -18,7 +18,7 @@ class DynamicVoiceCog(InitedCog):
             raise ChannelNotFoundError(channel_id)
         if not isinstance(_, VoiceChannel):
             raise ChannelTypeError(channel_id, "VoiceChannel")
-        if not (category := self.main_channel.category):
+        if not (category := _.category):
             raise ValueError("main voice channel must in a category")
 
         self.main_channel = _

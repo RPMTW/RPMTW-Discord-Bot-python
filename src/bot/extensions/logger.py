@@ -18,18 +18,15 @@ class LoggerCog(InitedCog):
             "edit": {"name": "修改", "color": Color.yellow()},
         }
 
-    def get_log_channel(self) -> TextChannel:
-        if channel := self._maybe_none.get("log_channel"):
-            return channel
+    async def cog_load(self):
+        await self.bot.wait_until_ready()
 
         if not (channel := self.bot.get_channel(self.config["msg"]["channel_id"])):
             raise ChannelNotFoundError(self.config["msg"]["channel_id"])
-
         if not isinstance(channel, TextChannel):
             raise ChannelTypeError(channel.id, "TextChannel")
 
-        self._maybe_none["log_channel"] = channel
-        return channel
+        self.log_channel = channel
 
     def embed_gen(self, type_: str, *msgs: Message):
         translated_type, color = self.embed_config[type_].values()
@@ -52,8 +49,7 @@ class LoggerCog(InitedCog):
 
     @InitedCog.listener()
     async def on_message_delete(self, msg: Message):
-        channel = self.get_log_channel()
-        await channel.send(embed=self.embed_gen("delete", msg))
+        await self.log_channel.send(embed=self.embed_gen("delete", msg))
         bot_logger.info(f"{msg.author} delete message:\n" f"\t{msg.content}")
 
     @InitedCog.listener()
@@ -63,8 +59,7 @@ class LoggerCog(InitedCog):
         if before_msg.content == after_msg.content:
             return
 
-        channel = self.get_log_channel()
-        await channel.send(embed=self.embed_gen("edit", before_msg, after_msg))
+        await self.log_channel.send(embed=self.embed_gen("edit", before_msg, after_msg))
         bot_logger.info(
             f"{before_msg.author}'s message have edited\n"
             "origin message:\n"

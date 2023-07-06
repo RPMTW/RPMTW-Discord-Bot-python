@@ -35,7 +35,6 @@ class BasicCog(InitedCog):
             ("訊息快取", f"{self.bot.cached_messages.__len__()}", True),
             ("Shard 數量", f'{self.bot.shard_count or "0"}', False),
         ):
-            print(name, value, inline)
             embed.add_field(name=name, value=value, inline=inline)
         await ctx.respond(embed=embed)
 

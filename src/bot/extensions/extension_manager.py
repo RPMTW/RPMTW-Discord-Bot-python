@@ -45,4 +45,5 @@ class ExtensionManagerCog(InitedCog):
 
 
 def setup(bot: "RPMTWBot"):
-    bot.add_cog(ExtensionManagerCog(bot))
+    if bot.is_dev:
+        bot.add_cog(ExtensionManagerCog(bot))

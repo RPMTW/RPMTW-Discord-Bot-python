@@ -25,6 +25,7 @@ class RPMTWBot(Bot):
         super().__init__(intents=intents, **self.config["bot_settings"])
 
         self.rpmtw_api_client = RPMTWApiClient(self, self.config["UniverseChat"])
+        self.is_dev = is_dev
         self.token = environ["TEST_BOT_TOKEN" if is_dev else "BOT_TOKEN"]
 
     def add_cog(self, cog: "InitedCog", *, override: bool = False) -> None:

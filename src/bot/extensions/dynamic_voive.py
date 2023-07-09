@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from discord import Member, PermissionOverwrite, VoiceChannel, VoiceState
-from exceptions import ChannelNotFoundError, ChannelTypeError
+from exceptions import ChannelTypeError
 from packages.cog_data import *
 from packages.default_data import bot_logger
 
@@ -15,7 +15,7 @@ class DynamicVoiceCog(InitedCog):
         await self.bot.wait_until_ready()
 
         if not (_ := self.bot.get_channel(channel_id := self.config["channel_id"])):
-            raise ChannelNotFoundError(channel_id)
+            raise ValueError("Channel id invalid")
         if not isinstance(_, VoiceChannel):
             raise ChannelTypeError(channel_id, "VoiceChannel")
         if not (category := _.category):

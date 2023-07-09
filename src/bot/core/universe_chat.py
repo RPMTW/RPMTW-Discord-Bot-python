@@ -8,12 +8,7 @@ from typing import TYPE_CHECKING
 from aiohttp import ClientSession
 from bidict import bidict
 from discord import DiscordException, Member, Message, TextChannel
-from exceptions import (
-    ChannelNotFoundError,
-    ChannelTypeError,
-    GuildNotFoundError,
-    HasNoWebhookError,
-)
+from exceptions import ChannelTypeError
 from socketio import AsyncClient
 
 if TYPE_CHECKING:
@@ -134,8 +129,10 @@ class RPMTWApiClient:
     async def init(self):
         await self._bot.wait_until_ready()
 
-        if not (channel := self._bot.get_channel(self._config["channel_id"])):
-            raise ChannelNotFoundError(self._config["channel_id"])
+        if not (
+            channel := self._bot.get_channel(channel_id := self._config["channel_id"])
+        ):
+            raise ValueError("Channel id invalid")
         if not isinstance(channel, TextChannel):
             raise ChannelTypeError(self._config["channel_id"], "TextChannel")
 
@@ -144,10 +141,10 @@ class RPMTWApiClient:
         try:
             webhook = webhooks[0]
         except IndexError as e:
-            raise HasNoWebhookError(self._config["channel_id"]) from e
+            raise ValueError(f"Channel with id `{channel_id}` has no webhook(s)") from e
 
         if not (guild := self._bot.get_guild(self._config["guild_id"])):
-            raise GuildNotFoundError(self._config["guild_id"])
+            raise ValueError("Guild id invalid")
 
         self._channel = channel
         self._webhook = webhook

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING
 
 from discord import Color, Embed, Message, TextChannel
-from exceptions import ChannelNotFoundError, ChannelTypeError
+from exceptions import ChannelTypeError
 from packages.cog_data import *
 from packages.default_data import bot_logger
 
@@ -22,7 +22,7 @@ class LoggerCog(InitedCog):
         await self.bot.wait_until_ready()
 
         if not (channel := self.bot.get_channel(self.config["msg"]["channel_id"])):
-            raise ChannelNotFoundError(self.config["msg"]["channel_id"])
+            raise ValueError("Channel id invalid")
         if not isinstance(channel, TextChannel):
             raise ChannelTypeError(channel.id, "TextChannel")
 

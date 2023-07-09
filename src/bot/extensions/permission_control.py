@@ -24,6 +24,9 @@ class PermissionControl(InitedCog):
     async def check(self, ctx: ApplicationContext):
         assert isinstance(author := ctx.author, Member)
 
+        if (message := ctx.message) and message.is_system():
+            await self.send_ephemeral(ctx, "本指令不可用於系統訊息")
+            return False
         if not isinstance(ctx.channel, (TextChannel, Thread)):
             await self.send_ephemeral(ctx, "本指令僅能用在文字頻道或討論串")
             return False

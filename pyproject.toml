@@ -8,6 +8,7 @@ authors = [
     {name = "RPMTW", email = ""},
 ]
 dependencies = [
+    "bidict",
     "py-cord>=2.4.0",
     "python-dotenv>=0.21.1",
     "python-socketio[asyncio_client]==4.6.1",

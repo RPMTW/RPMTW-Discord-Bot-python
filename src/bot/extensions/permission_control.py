@@ -38,15 +38,15 @@ class PermissionControl(InitedCog):
 
     @message_command(name="釘選", guild_only=True)
     async def pin(self, ctx: ApplicationContext, message: Message):
-        if not self.check(ctx):
+        if not await self.check(ctx):
             return
 
         await message.pin()
         await self.send_ephemeral(ctx, "釘選成功")
 
-    @message_command(name="取消釘過", guild_only=True)
+    @message_command(name="取消釘選", guild_only=True)
     async def unpin(self, ctx: ApplicationContext, message: Message):
-        if not self.check(ctx):
+        if not await self.check(ctx):
             return
 
         await message.unpin()

@@ -12,12 +12,15 @@ class EventCog(InitedCog):
     async def cog_load(self):
         await self.bot.wait_until_ready()
 
-        if not (guild := self.bot.get_guild(815819580840607807)):
+        if not (guild := self.bot.get_guild(self.bot.config["guild_id"])):
             raise ValueError("Guild id invalid")
-        if not (role := guild.get_role(945632168124751882)):
+        if not (role := guild.get_role(self.config["role_id"])):
             raise ValueError("Role id invalid")
+        if not (channel := guild.get_channel(self.config["channel_id"])):
+            raise ValueError("Channel id invalid")
 
         self.role = role
+        self.channel = channel
 
     @InitedCog.listener()
     async def on_application_command_error(
@@ -33,7 +36,7 @@ class EventCog(InitedCog):
         if (author := message.author).bot or not isinstance(author, Member):
             return
 
-        if message.channel.id == 940533694697975849:
+        if message.channel == self.channel:
             await author.add_roles(self.role)
 
 

@@ -49,8 +49,11 @@ class ReceivedMessage:
 
     def get_name(self):
         if nickname := self.nickname:
-            return f"{self.username} ({nickname})".replace("_", "\\_")
-        return self.username.replace("_", "\\_")
+            return f"{self.username} ({nickname})"
+        return self.username
+
+    def get_name_escape(self):
+        return self.get_name().replace("_", "\\_")
 
     @classmethod
     def from_raw(cls, raw_data: list[int]):
@@ -204,11 +207,11 @@ class RPMTWApiClient:
         content = f"：{reply.message}\n-> {content}"
 
         if not (reply_id := _ID_UUID.inverse.get(reply.uuid)):
-            return f"回覆 {reply.get_name()}{content}"
+            return f"回覆 {reply.get_name_escape()}{content}"
 
         discord_message = await self._channel.fetch_message(reply_id)
-        content = f"（<{discord_message.jump_url}>）{content}"
+        content = f"（ {discord_message.jump_url} ）{content}"
 
         if reply.is_from_discord():
             return f"回覆 {discord_message.author.mention}{content}"
-        return f"回覆 {reply.get_name()}{content}"
+        return f"回覆 {reply.get_name_escape()}{content}"

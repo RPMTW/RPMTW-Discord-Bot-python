@@ -36,7 +36,7 @@ class DynamicVoiceCog(InitedCog):
         exclusive_channel = await self.category.create_voice_channel(
             f"{member.name}的頻道",
             overwrites={
-                member: PermissionOverwrite(manage_roles=True, manage_channels=True),
+                member: PermissionOverwrite(manage_channels=True),
                 member.guild.default_role: PermissionOverwrite(priority_speaker=True),
                 self.bot.user: PermissionOverwrite(priority_speaker=False),
             },

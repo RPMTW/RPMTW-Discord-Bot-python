@@ -67,7 +67,7 @@ class DynamicVoiceCog(InitedCog):
         if channel == self.main_channel:
             return
 
-        if not channel.members:
+        if not (members := channel.members) or all(member.bot for member in members):
             await self.delete_exclusive_voice_channel(member, channel)
 
     async def on_voice_move(

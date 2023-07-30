@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from discord import Member, PermissionOverwrite, VoiceChannel, VoiceState
+from discord.errors import HTTPException
 from exceptions import ChannelTypeError
 from packages.cog_data import *
 from packages.default_data import bot_logger
@@ -55,9 +56,16 @@ class DynamicVoiceCog(InitedCog):
         )
 
     async def on_voice_join(self, member: Member, channel: "VoiceChannel | StageChannel"):
-        if channel == self.main_channel:
-            exclusive_channel = await self.create_exclusive_voice_channel(member)
+        if channel ！= self.main_channel:
+            return
+
+        exclusive_channel = await self.create_exclusive_voice_channel(member)
+
+        # Moves fail when members join and leave the main channel very quickly
+        try:
             await member.move_to(exclusive_channel)
+        except HTTPException:
+            await self.delete_exclusive_voice_channel(member, exclusive_channel)
 
     async def on_voice_leave(
         self, member: Member, channel: "VoiceChannel | StageChannel"

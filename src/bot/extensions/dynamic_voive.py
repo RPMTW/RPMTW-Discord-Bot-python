@@ -56,7 +56,7 @@ class DynamicVoiceCog(InitedCog):
         )
 
     async def on_voice_join(self, member: Member, channel: "VoiceChannel | StageChannel"):
-        if channel ！= self.main_channel:
+        if channel != self.main_channel:
             return
 
         exclusive_channel = await self.create_exclusive_voice_channel(member)

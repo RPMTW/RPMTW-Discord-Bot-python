@@ -1,18 +1,24 @@
-[tool.pdm]
+[tool.poetry]
+name = "rpmtw-discord-bot-python"
+version = "0.1.0"
+description = "RPMTW Discord Bot but write with Python"
+authors = ["Euxcbsks <hawhaw02030746@gmail.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+packages = [{include = "rpmtw_discord_bot_python"}]
 
-[project]
-name = ""
-version = ""
-description = ""
-authors = [
-    {name = "RPMTW", email = ""},
-]
-dependencies = [
-    "bidict",
-    "py-cord>=2.4.0",
-    "python-dotenv>=0.21.1",
-    "python-socketio[asyncio_client]==4.6.1",
-    "psutil>=5.9.4",
-]
-requires-python = ">=3.11"
-license = {text = "GPL-3.0"}
+[tool.poetry.dependencies]
+python = "^3.11"
+lux-discord = {git = "https://github.com/Euxcbsks/lux", rev = "main"}
+psutil = "^5.9.5"
+bidict = "^0.22.1"
+python-socketio = {version = "4.6.1", extras = ["asyncio_client"]}
+
+
+[tool.poetry.group.dev.dependencies]
+lux-discord = {git = "https://github.com/Euxcbsks/lux", rev = "main", extras = ["dotenv", "colorlog"]}
+uvicorn = "^0.23.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

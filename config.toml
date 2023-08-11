@@ -1,0 +1,5 @@
+[GLOBAL]
+intent_type = "all"
+
+[DEVELOPMENT]
+test_guilds = [1077436291563671603]

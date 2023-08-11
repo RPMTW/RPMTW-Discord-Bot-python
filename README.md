@@ -2,73 +2,74 @@
 
 ## Index
 - [RPMTW-Discord-Bot-python](#rpmtw-discord-bot-python)
-  - [Index](#index)
-  - [How to setup](#how-to-setup)
-  - [Features](#features)
+    - [Index](#index)
+    - [Pre requirements](#pre-requirements)
+    - [Basic setup](#basic-setup)
+    - [Deploy](#deploy)
+    - [Development](#development)
+    - [Features](#features)
 
-## How to setup
+## Pre requirements
 
-:star: Requirements: Python 3.11 Stable
+- **Python** version >= 3.11.x (stable)
+    - Unix user can use [pyenv](https://github.com/pyenv/pyenv)
+    - Windows user can use [pyenv-win](https://github.com/pyenv-win/pyenv-win) or download from [here](https://www.python.org/downloads/)
+- [**Poetry**](https://github.com/python-poetry/poetry) (Package Manager)
 
-1. **Install Package Manager**
+## Basic setup
 
-   1. Windows
-      ```ps
-      py -3.11 -m pip install pdm
-      ```
-   2. Linux
-      ```hs
-      python3.11 -m pip install pdm
-      ```
+1. **Clone Repo**
 
-2. **Check PDM Install Success**  
-   
-   Restart Terminal and run this command
-   ```ps
-   pdm
-   ```
+    Clone repo to your local machine.
 
-3. **Clone Repo**
 
-   Use Any Github Client (Github Desktop, Gitkraken, etc.) clone repo to local.  
-   Or use git command:
-   ```bash
-   git clone https://github.com/RPMTW/RPMTW-Discord-Bot-python
-   ```
+2. **Install Dependencies**
 
-4. **Sync Package**
-   ```hs
-   pdm sync
-   ```
+    ```
+    poetry install
+    ```
 
-5. **Type Token**
-   Type your discord bot token and universe chat token into [`./.env`](./.env)
-   ```py
-   BOT_TOKEN = "" # Discord token
-   CHAT_TOKEN = "" # Universe Chat token
-   ```
+    If you want to have a better development experience, it is recommended to use the following commands instead.
 
-6. **Run Script**
-   
-   1. Windows
-      ```hs
-      run ./run.bat
-      ```
-   2. Linux
-      ```hs
-      start ./run.sh
-      ```
+    ```
+    poetry install --with dev
+    ```
+
+3. **Update .env file**
+
+    Insert your discord bot token and universe chat token into [`./.env`](./.env). Sample file can be found at [here](./sample/.env).
+
+
+Then you can launch bot with following command:
+
+```
+poetry shell
+python main.py
+```
+
+## Deploy
+
+If you want let bot run on production mode, you can add '-P' (which means `production`) to cli args.
+
+```
+poetry shell
+python main.py -P
+```
+
+- This will result in the following changes
+    - Keep the log level at `WARNING`
+    - Disable debug extra init (won't automatically add `Development` cog)
 
 ## Features
 
 - [x] General
-  - [x] `hello` - say Hello to user
-  - [x] `info` - show bot's information
-- [ ] Chef
-  - [ ] `chef user` - chef someone
-  - [ ] `chef rank` - show chef rank
-- [x] FAQ
-  - [x] `faq <question>` - show the faq
+    - [x] `hello` - say Hello to user
+    - [x] `info` - show bot's information
+- [x] Chef
+    - [x] `chef user` - chef someone
+    - [x] `chef rank` - show chef rank
+- [ ] FAQ
+    - [ ] `faq <question>` - show the faq
 - [x] Dynamic Voice Channel
-- [ ] Universe Chat
-- [ ] ...
+- [x] Universe Chat
+    - [x] Sync message between universe chat and Discord

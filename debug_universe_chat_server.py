@@ -8,7 +8,7 @@ app = ASGIApp(sio)
 
 
 @sio.event
-def connect(sid, environ, auth):
+def connect(sid, environ):
     print("connect ", sid)
 
 

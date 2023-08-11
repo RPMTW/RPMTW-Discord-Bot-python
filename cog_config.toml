@@ -1,0 +1,43 @@
+[DEVELOPMENT.GLOBAL]
+guild_id = 1077436291563671603
+
+[DEVELOPMENT.DynamicVoice]
+channel_id = 1081036813591924817
+
+[DEVELOPMENT.Event]
+channel_id = 1094992409806508032
+role_id = 1094992470758150327
+
+[DEVELOPMENT.Logger]
+channel_id = 1081083466608803860
+
+[DEVELOPMENT.PermissionControl]
+role_id = 1127424551391871076
+
+[DEVELOPMENT.UniverseChat]
+channel_id = 1081459641894055986
+universe_chat_base_url = "http://localhost:2087"
+universe_chat_api_base_url = "http://localhost:8080"
+
+# ========================================================= #
+
+[PRODUCTION.GLOBAL]
+guild_id = 815819580840607807
+
+[PRODUCTION.DynamicVoice]
+channel_id = 832895058281758740
+
+[PRODUCTION.Event]
+channel_id = 940533694697975849
+role_id = 945632168124751882
+
+[PRODUCTION.Logger]
+channel_id = 832849374395760660
+
+[PRODUCTION.PermissionControl]
+role_id = 993459221142196266
+
+[PRODUCTION.UniverseChat]
+channel_id = 1033586182254231592
+universe_chat_base_url = "https://api.rpmtw.com:2087"
+universe_chat_api_base_url = "https://api.rpmtw.com:2096"

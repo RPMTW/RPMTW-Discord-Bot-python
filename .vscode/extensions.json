@@ -1,12 +1,13 @@
 {
   "recommendations": [
-    "donjayamanne.python-extension-pack",
-    "bungcip.better-toml",
     "aaron-bond.better-comments",
-    "streetsidesoftware.code-spell-checker",
-    "yzhang.markdown-all-in-one",
-    "ms-python.isort",
+    "charliermarsh.ruff",
     "ms-python.black-formatter",
-    "ZainChen.json"
+    "ms-python.python",
+    "peterschmalfeldt.explorer-exclude",
+    "streetsidesoftware.code-spell-checker",
+    "tamasfe.even-better-toml",
+    "yzhang.markdown-all-in-one",
+    "zainchen.json"
   ]
 }

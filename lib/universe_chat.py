@@ -190,6 +190,7 @@ class APIClient:
                 await self._get_content(message),
                 avatar_url=message.avatarUrl,
                 username=message.get_name(),
+                suppress_embeds=True,
                 wait=True,
             )
         except DiscordException as e:
@@ -224,7 +225,7 @@ class APIClient:
             self._raise_not_inited()
 
         discord_message = await self._channel.fetch_message(reply_id)
-        content = f"（ {discord_message.jump_url} ）{content}"
+        content = f"（{discord_message.jump_url}）{content}"
 
         if reply.is_from_discord():
             return f"回覆 {discord_message.author.mention}{content}"

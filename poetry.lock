@@ -441,7 +441,7 @@ mongodb = ["beanie (>=1.20.0,<2.0.0)"]
 type = "git"
 url = "https://github.com/Euxcbsks/lux"
 reference = "main"
-resolved_reference = "cb2a419e20cd4f3ee8350fac7eadd93f5901d88e"
+resolved_reference = "ebb8f29fc684040d764884397b73ade70ebb4984"
 
 [[package]]
 name = "multidict"

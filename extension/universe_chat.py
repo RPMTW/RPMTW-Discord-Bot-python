@@ -2,8 +2,9 @@ from dataclasses import dataclass
 from os import environ
 
 from disnake import Message, TextChannel
-from lib.universe_chat import APIClient
 from lux import GeneralCog, Lux
+
+from lib.universe_chat import APIClient
 
 
 @dataclass
@@ -31,7 +32,7 @@ class UniverseChat(GeneralCog):
             return self.logger.error("API client init failed")
 
         self.api_client = api_client
-        await self.api_client.connect(environ.get("UNIVERSE_CHAT_TOKEN"))
+        await self.api_client.connect(environ.get("CHAT_TOKEN"))
 
     async def cog_unload(self) -> None:
         await self.api_client.disconnect()
